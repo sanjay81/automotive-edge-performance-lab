@@ -11,7 +11,7 @@ if [[ ! -x "$ROBOT_BIN" ]]; then
     exit 1
 fi
 
-RUN_ID="$(date +%Y%m%d-%H%M%S)"
+RUN_ID="${RUN_ID:-$(date +%Y%m%d-%H%M%S)}"
 OUTPUT_DIR="results/run-$RUN_ID"
 
 exec "$ROBOT_BIN" \

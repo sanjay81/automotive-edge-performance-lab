@@ -50,6 +50,12 @@ robot tests/idle_state/idle_performance.robot
 Shared limits are in `config/thresholds.yaml`. Update values there to change
 the pass/fail limits used by the suites.
 
+## Continuous integration
+
+GitHub Actions runs the full suite on pushes to `main`, pull requests, and
+manual dispatches. Each run uploads its Robot report, CSV measurements, and
+graphs as a downloadable workflow artifact.
+
 Each suite starts `ecu-service` and stops any existing rogue load before its
 scenario. The load scenario also stops rogue load during test and suite
 teardown. To stop and remove the lab containers after a run, use:
