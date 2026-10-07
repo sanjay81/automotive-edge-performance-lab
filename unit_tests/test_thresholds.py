@@ -37,11 +37,33 @@ def test_load_thresholds_exist():
     assert "max_memory_mb" in thresholds["load"]
 
 
+def test_recovery_thresholds_exist():
+    thresholds = load_thresholds()
+
+    assert "recovery" in thresholds
+    assert "max_cpu_avg" in thresholds["recovery"]
+    assert "max_memory_mb" in thresholds["recovery"]
+
+
+def test_startup_thresholds_exist():
+    thresholds = load_thresholds()
+
+    assert "startup" in thresholds
+    assert "max_seconds" in thresholds["startup"]
+
+
 def test_threshold_values_are_positive():
     thresholds = load_thresholds()
 
-    assert thresholds["idle"]["max_cpu_avg"] > 0
-    assert thresholds["idle"]["max_memory_mb"] > 0
+    for scenario, limits in thresholds.items():
+        assert isinstance(limits, dict), scenario
+        for name, value in limits.items():
+            assert isinstance(value, (int, float)), f"{scenario}.{name} must be numeric"
+            assert value > 0, f"{scenario}.{name} must be positive"
 
-    assert thresholds["load"]["min_cpu_avg"] > 0
-    assert thresholds["load"]["max_cpu_avg"] > 0
+
+def test_cpu_threshold_ranges_are_ordered():
+    thresholds = load_thresholds()
+
+    assert thresholds["idle"]["max_cpu_avg"] <= thresholds["idle"]["max_cpu_peak"]
+    assert thresholds["load"]["min_cpu_avg"] < thresholds["load"]["max_cpu_avg"]

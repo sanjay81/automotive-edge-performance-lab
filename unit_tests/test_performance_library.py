@@ -1,6 +1,8 @@
+import csv
 from unittest.mock import MagicMock, patch
 
 from libraries.PerformanceLibrary import PerformanceLibrary
+
 
 def test_get_container_stats_returns_cpu_and_memory():
     mock_container = MagicMock()
@@ -104,20 +106,57 @@ def test_get_container_stats_without_online_cpus(mock_from_env):
     assert result["cpu_percent"] == 100.0
     assert result["memory_mb"] == 100.0
 
-    
+
 @patch("libraries.PerformanceLibrary.docker.from_env")
 def test_measure_container_generates_summary_and_csv(
     mock_from_env,
     tmp_path
 ):
+    mock_client = MagicMock()
+    mock_from_env.return_value = mock_client
     library = PerformanceLibrary()
 
-    samples = [
-        {"cpu_percent": 10.0, "memory_mb": 30.0},
-        {"cpu_percent": 20.0, "memory_mb": 32.0},
-        {"cpu_percent": 30.0, "memory_mb": 34.0},
-    ]
-
-    library.get_container_stats = MagicMock(
-        side_effect=samples
+    library.get_container_cpu_percent = MagicMock(
+        side_effect=[10.0, 20.0, 30.0]
     )
+    library.get_container_memory_mb = MagicMock(
+        side_effect=[30.0, 32.0, 34.0]
+    )
+
+    clock = {"now": 0.0}
+    csv_file = tmp_path / "measurement.csv"
+
+    def fake_time():
+        return clock["now"]
+
+    def fake_sleep(seconds):
+        clock["now"] += seconds
+
+    with patch("libraries.PerformanceLibrary.time.time", side_effect=fake_time):
+        with patch("libraries.PerformanceLibrary.time.sleep", side_effect=fake_sleep):
+            result = library.measure_container(
+                "ecu-service",
+                duration=3,
+                interval=1,
+                csv_file=str(csv_file),
+            )
+
+    assert result == {
+        "cpu_avg": 20.0,
+        "cpu_max": 30.0,
+        "memory_avg": 32.0,
+        "memory_max": 34.0,
+        "samples": 3,
+        "csv_file": str(csv_file),
+    }
+    assert library.get_container_cpu_percent.call_count == 3
+    assert library.get_container_memory_mb.call_count == 3
+
+    with csv_file.open(newline="") as file:
+        rows = list(csv.DictReader(file))
+
+    assert rows == [
+        {"elapsed_seconds": "0.0", "cpu_percent": "10.0", "memory_mb": "30.0"},
+        {"elapsed_seconds": "1.0", "cpu_percent": "20.0", "memory_mb": "32.0"},
+        {"elapsed_seconds": "2.0", "cpu_percent": "30.0", "memory_mb": "34.0"},
+    ]

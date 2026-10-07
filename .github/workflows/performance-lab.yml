@@ -36,6 +36,9 @@ jobs:
       - name: Check Docker Compose
         run: docker compose version
 
+      - name: Run unit tests
+        run: .venv/bin/pytest -q unit_tests
+
       - name: Run performance suite
         run: ./scripts/run_suite.sh
 
