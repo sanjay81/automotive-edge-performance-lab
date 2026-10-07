@@ -1,4 +1,4 @@
-name: Performance Lab CI
+name: Automotive Edge Performance & Stability Lab CI
 
 on:
   push:

@@ -1,4 +1,4 @@
-# Automotive Edge Performance Lab
+# Automotive Edge Performance & Stability Lab
 
 Robot Framework tests for measuring the ECU service while idle, under rogue
 load, during recovery, and across startup and restart cycles.
