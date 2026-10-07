@@ -1,17 +1,64 @@
 # Automotive Edge Performance & Stability Lab
 
-Robot Framework tests for measuring the ECU service while idle, under rogue
-load, during recovery, and across startup and restart cycles.
+[![CI](https://github.com/sanjay81/automotive-edge-performance-lab/actions/workflows/ci.yml/badge.svg)](https://github.com/sanjay81/automotive-edge-performance-lab/actions)
+
+A clean-room **embedded/automotive performance-testing POC** built with Robot Framework, Python, Docker and GitHub Actions. It demonstrates how a repeatable test framework can measure ECU-service resource behaviour while idle, under synthetic load, during recovery, and across startup/restart cycles.
+
+> **Portfolio focus:** Embedded test automation · performance validation · CI/CD · containerized test environments · measurable pass/fail thresholds
+
+## What this project demonstrates
+
+- Automated CPU and memory measurement for an ECU-style service.
+- Synthetic rogue/background load generation.
+- Recovery checks after load is removed.
+- Startup-time measurement and repeated restart stability checks.
+- Centralized thresholds in YAML for deterministic pass/fail decisions.
+- Robot Framework reports plus CSV measurement artifacts.
+- Automatically generated CPU/memory graphs.
+- Repeatable execution in GitHub Actions.
+- Per-run result directories so measurements remain traceable.
+
+This is intentionally a **small, reproducible laboratory**, not a claim to reproduce a production HIL/vehicle environment. The service and load are synthetic so the performance-test framework can be demonstrated publicly without proprietary code or data.
+
+## Test flow
+
+```text
+GitHub Actions / Local Runner
+            |
+            v
+     Robot Framework
+            |
+            v
+ Python measurement libraries
+            |
+            v
+ Docker test environment
+     |               |
+ ECU-style service   Rogue load
+     |
+     v
+ CSV + graphs + Robot reports
+```
+
+## Scenarios
+
+| Scenario | Purpose |
+|---|---|
+| Idle performance | Measure CPU and memory while the ECU-style service is idle |
+| Rogue load | Observe resource behaviour while synthetic background load is active |
+| Recovery | Verify resource usage settles after the load is removed |
+| Startup | Measure service startup time |
+| Restart stability | Repeat startup measurement across multiple restart cycles |
+
+Shared pass/fail limits live in `config/thresholds.yaml`.
 
 ## Prerequisites
 
-- Docker Desktop or Docker Engine is running.
-- Docker Compose v2 is available as `docker compose`.
-- Python 3.10 or newer is installed.
+- Docker Desktop or Docker Engine
+- Docker Compose v2 available as `docker compose`
+- Python 3.10+
 
-## Install Python dependencies
-
-Run these commands from this directory:
+## Setup
 
 ```bash
 python3 -m venv .venv
@@ -19,47 +66,55 @@ source .venv/bin/activate
 python -m pip install -r requirements.txt
 ```
 
-## Run the full suite
-
-From this directory, run:
+## Run the complete suite
 
 ```bash
 ./scripts/run_suite.sh
 ```
 
-The script runs all suites in `tests/` and creates a timestamped directory in
-`results/` containing Robot Framework's `report.html`, `log.html`, and
-`output.xml`, along with the scenario measurements (`idle.csv`, `load.csv`,
-`recovery.csv`) and CPU/memory graphs. Each run is kept in its own directory.
+Each run creates a timestamped directory in `results/` containing:
 
-To run a single scenario directly, activate `.venv` and pass its test file to
-Robot Framework, for example:
+- `report.html`
+- `log.html`
+- `output.xml`
+- scenario CSV measurements such as `idle.csv`, `load.csv`, and `recovery.csv`
+- generated CPU and memory graphs
+
+To execute a single Robot Framework scenario:
 
 ```bash
 robot tests/idle_state/idle_performance.robot
 ```
 
-## Scenarios and thresholds
-
-- `idle_state/idle_performance.robot` measures CPU and memory while idle.
-- `load/rogue_load.robot` measures ECU CPU and memory under generated load.
-- `recovery/recovery.robot` checks resource use after stopping rogue load.
-- `startup/startup_time.robot` checks one startup time.
-- `stability/restart_stability.robot` checks repeated startup times.
-
-Shared limits are in `config/thresholds.yaml`. Update values there to change
-the pass/fail limits used by the suites.
-
 ## Continuous integration
 
-GitHub Actions runs the full suite on pushes to `main`, pull requests, and
-manual dispatches. Each run uploads its Robot report, CSV measurements, and
-graphs as a downloadable workflow artifact.
+GitHub Actions executes the test suite on pushes to `main`, pull requests, and manual dispatches. CI uploads Robot Framework results, CSV measurements, and graphs as workflow artifacts.
 
-Each suite starts `ecu-service` and stops any existing rogue load before its
-scenario. The load scenario also stops rogue load during test and suite
-teardown. To stop and remove the lab containers after a run, use:
+## Test isolation and cleanup
+
+Each suite prepares the ECU-style service and removes any existing rogue load before its scenario. The load suite also removes the synthetic load during test/suite teardown.
+
+To stop and remove the lab containers manually:
 
 ```bash
 docker compose down
 ```
+
+## Engineering intent
+
+This POC is designed to show the **testing framework itself**: repeatable setup, measurement, threshold evaluation, reporting, and CI execution. A production automotive implementation would replace the synthetic service/load with real target services, HIL/rig interfaces, device diagnostics, vehicle-network traffic, and project-specific performance requirements.
+
+## Next extensions
+
+Useful next steps include:
+
+1. Explicit CPU/RAM container quota tests.
+2. Long-duration idle and load stability runs.
+3. Reboot/power-cycle orchestration.
+4. Network-load scenarios such as replayed traffic.
+5. More diagnostic/log assertions alongside resource measurements.
+6. Trend comparison between CI runs.
+
+---
+
+**Primary technologies:** Python · Robot Framework · Docker · Linux · GitHub Actions · Performance Testing · Embedded Test Automation
