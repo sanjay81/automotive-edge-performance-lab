@@ -3,3 +3,4 @@ docker>=7.0,<8.0
 requests>=2.31,<3.0
 matplotlib>=3.8,<4.0
 PyYAML>=6.0,<7.0
+pytest
