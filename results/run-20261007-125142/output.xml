@@ -1,0 +1,983 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<robot generator="Robot 7.5 (Python 3.14.3 on darwin)" generated="2026-10-07T12:51:42.369684" rpa="false" schemaversion="5">
+<suite id="s1" name="Tests" source="/Users/sanjaykumar/Desktop/work/vwif/project/automotive-edge-performance-lab/tests">
+<suite id="s1-s1" name="Idle State" source="/Users/sanjaykumar/Desktop/work/vwif/project/automotive-edge-performance-lab/tests/idle_state">
+<suite id="s1-s1-s1" name="Idle Performance" source="/Users/sanjaykumar/Desktop/work/vwif/project/automotive-edge-performance-lab/tests/idle_state/idle_performance.robot">
+<kw name="Prepare Performance Suite" owner="test_lifecycle" type="SETUP">
+<kw name="Run Process" owner="Process">
+<msg time="2026-10-07T12:51:42.672249" level="INFO">Starting process:
+docker compose up -d ecu-service</msg>
+<msg time="2026-10-07T12:51:42.674599" level="INFO">Waiting for process to complete.</msg>
+<msg time="2026-10-07T12:51:42.896403" level="INFO">Process completed.</msg>
+<msg time="2026-10-07T12:51:42.896627" level="INFO">${result} = &lt;result object with rc 0&gt;</msg>
+<var>${result}</var>
+<arg>docker</arg>
+<arg>compose</arg>
+<arg>up</arg>
+<arg>-d</arg>
+<arg>ecu-service</arg>
+<doc>Runs a process and waits for it to complete.</doc>
+<status status="PASS" start="2026-10-07T12:51:42.672032" elapsed="0.224614"/>
+</kw>
+<kw name="Should Be Equal As Integers" owner="BuiltIn">
+<msg time="2026-10-07T12:51:42.897218" level="INFO">Argument types are:
+&lt;class 'int'&gt;
+&lt;class 'str'&gt;</msg>
+<arg>${result.rc}</arg>
+<arg>0</arg>
+<arg>Could not start ecu-service: ${result.stderr}</arg>
+<doc>Fails if objects are unequal after converting them to integers.</doc>
+<status status="PASS" start="2026-10-07T12:51:42.896827" elapsed="0.000424"/>
+</kw>
+<kw name="Stop Rogue Load" owner="test_lifecycle">
+<kw name="Run Process" owner="Process">
+<msg time="2026-10-07T12:51:42.897709" level="INFO">Starting process:
+docker compose stop rogue-app</msg>
+<msg time="2026-10-07T12:51:42.899732" level="INFO">Waiting for process to complete.</msg>
+<msg time="2026-10-07T12:51:42.966320" level="INFO">Process completed.</msg>
+<msg time="2026-10-07T12:51:42.966525" level="INFO">${result} = &lt;result object with rc 0&gt;</msg>
+<var>${result}</var>
+<arg>docker</arg>
+<arg>compose</arg>
+<arg>stop</arg>
+<arg>rogue-app</arg>
+<doc>Runs a process and waits for it to complete.</doc>
+<status status="PASS" start="2026-10-07T12:51:42.897526" elapsed="0.069017"/>
+</kw>
+<if>
+<branch type="IF" condition="${result.rc} != 0">
+<kw name="Log" owner="BuiltIn">
+<arg>Rogue load was already stopped or unavailable: ${result.stderr}</arg>
+<arg>WARN</arg>
+<doc>Logs the given message with the given level.</doc>
+<status status="NOT RUN" start="2026-10-07T12:51:42.966931" elapsed="0.000014"/>
+</kw>
+<status status="NOT RUN" start="2026-10-07T12:51:42.966680" elapsed="0.000281"/>
+</branch>
+<status status="PASS" start="2026-10-07T12:51:42.966654" elapsed="0.000318"/>
+</if>
+<status status="PASS" start="2026-10-07T12:51:42.897391" elapsed="0.069624"/>
+</kw>
+<status status="PASS" start="2026-10-07T12:51:42.671708" elapsed="0.295330"/>
+</kw>
+<test id="s1-s1-s1-t1" name="Verify ECU Idle Performance" line="17">
+<kw name="Measure Container" owner="PerformanceLibrary">
+<msg time="2026-10-07T12:51:57.449341" level="INFO">Time=3.4s CPU=0.02% RAM=20.86 MB
+Time=8.44s CPU=0.01% RAM=20.86 MB
+Time=13.47s CPU=0.02% RAM=20.86 MB</msg>
+<msg time="2026-10-07T12:51:57.449725" level="INFO">${result} = {'cpu_avg': 0.02, 'cpu_max': 0.02, 'memory_avg': 20.86, 'memory_max': 20.86, 'samples': 3, 'csv_file': 'results/run-20261007-125142/idle.csv'}</msg>
+<var>${result}</var>
+<arg>${CONTAINER}</arg>
+<arg>${DURATION}</arg>
+<arg>${INTERVAL}</arg>
+<arg>${RESULTS_DIR}/idle.csv</arg>
+<status status="PASS" start="2026-10-07T12:51:42.967327" elapsed="14.482452"/>
+</kw>
+<kw name="Generate Graphs" owner="PerformanceLibrary">
+<msg time="2026-10-07T12:51:57.654836" level="INFO">${graphs} = {'cpu_graph': 'results/run-20261007-125142/idle_cpu.png', 'memory_graph': 'results/run-20261007-125142/idle_memory.png'}</msg>
+<var>${graphs}</var>
+<arg>${RESULTS_DIR}/idle.csv</arg>
+<arg>${RESULTS_DIR}/idle</arg>
+<status status="PASS" start="2026-10-07T12:51:57.450217" elapsed="0.204643"/>
+</kw>
+<kw name="Set Variable" owner="BuiltIn">
+<msg time="2026-10-07T12:51:57.655106" level="INFO">${cpu_avg} = 0.02</msg>
+<var>${cpu_avg}</var>
+<arg>${result}[cpu_avg]</arg>
+<doc>Returns the given values which can then be assigned to a variable.</doc>
+<status status="PASS" start="2026-10-07T12:51:57.654940" elapsed="0.000176"/>
+</kw>
+<kw name="Set Variable" owner="BuiltIn">
+<msg time="2026-10-07T12:51:57.655246" level="INFO">${cpu_max} = 0.02</msg>
+<var>${cpu_max}</var>
+<arg>${result}[cpu_max]</arg>
+<doc>Returns the given values which can then be assigned to a variable.</doc>
+<status status="PASS" start="2026-10-07T12:51:57.655156" elapsed="0.000099"/>
+</kw>
+<kw name="Set Variable" owner="BuiltIn">
+<msg time="2026-10-07T12:51:57.655373" level="INFO">${memory_avg} = 20.86</msg>
+<var>${memory_avg}</var>
+<arg>${result}[memory_avg]</arg>
+<doc>Returns the given values which can then be assigned to a variable.</doc>
+<status status="PASS" start="2026-10-07T12:51:57.655291" elapsed="0.000091"/>
+</kw>
+<kw name="Set Variable" owner="BuiltIn">
+<msg time="2026-10-07T12:51:57.655498" level="INFO">${memory_max} = 20.86</msg>
+<var>${memory_max}</var>
+<arg>${result}[memory_max]</arg>
+<doc>Returns the given values which can then be assigned to a variable.</doc>
+<status status="PASS" start="2026-10-07T12:51:57.655416" elapsed="0.000090"/>
+</kw>
+<kw name="Log" owner="BuiltIn">
+<msg time="2026-10-07T12:51:57.655641" level="INFO">Average CPU: 0.02 %</msg>
+<arg>Average CPU: ${cpu_avg} %</arg>
+<doc>Logs the given message with the given level.</doc>
+<status status="PASS" start="2026-10-07T12:51:57.655562" elapsed="0.000093"/>
+</kw>
+<kw name="Log" owner="BuiltIn">
+<msg time="2026-10-07T12:51:57.655777" level="INFO">Maximum CPU: 0.02 %</msg>
+<arg>Maximum CPU: ${cpu_max} %</arg>
+<doc>Logs the given message with the given level.</doc>
+<status status="PASS" start="2026-10-07T12:51:57.655706" elapsed="0.000085"/>
+</kw>
+<kw name="Log" owner="BuiltIn">
+<msg time="2026-10-07T12:51:57.655910" level="INFO">Average RAM: 20.86 MB</msg>
+<arg>Average RAM: ${memory_avg} MB</arg>
+<doc>Logs the given message with the given level.</doc>
+<status status="PASS" start="2026-10-07T12:51:57.655843" elapsed="0.000080"/>
+</kw>
+<kw name="Log" owner="BuiltIn">
+<msg time="2026-10-07T12:51:57.656043" level="INFO">Maximum RAM: 20.86 MB</msg>
+<arg>Maximum RAM: ${memory_max} MB</arg>
+<doc>Logs the given message with the given level.</doc>
+<status status="PASS" start="2026-10-07T12:51:57.655976" elapsed="0.000079"/>
+</kw>
+<kw name="Should Be True" owner="BuiltIn">
+<arg>${cpu_avg} &lt; ${IDLE}[max_cpu_avg]</arg>
+<arg>Average CPU exceeded limit: ${cpu_avg}% &gt; ${IDLE}[max_cpu_avg]%</arg>
+<doc>Fails if the given condition is not true.</doc>
+<status status="PASS" start="2026-10-07T12:51:57.656094" elapsed="0.000195"/>
+</kw>
+<kw name="Should Be True" owner="BuiltIn">
+<arg>${cpu_max} &lt; ${IDLE}[max_cpu_peak]</arg>
+<arg>Peak CPU exceeded limit: ${cpu_max}% &gt; ${IDLE}[max_cpu_peak]%</arg>
+<doc>Fails if the given condition is not true.</doc>
+<status status="PASS" start="2026-10-07T12:51:57.656331" elapsed="0.000110"/>
+</kw>
+<kw name="Should Be True" owner="BuiltIn">
+<arg>${memory_max} &lt; ${IDLE}[max_memory_mb]</arg>
+<arg>RAM exceeded limit: ${memory_max} MB &gt; ${IDLE}[max_memory_mb] MB</arg>
+<doc>Fails if the given condition is not true.</doc>
+<status status="PASS" start="2026-10-07T12:51:57.656481" elapsed="0.000102"/>
+</kw>
+<status status="PASS" start="2026-10-07T12:51:42.967101" elapsed="14.689530"/>
+</test>
+<kw name="Stop Rogue Load" owner="test_lifecycle" type="TEARDOWN">
+<kw name="Run Process" owner="Process">
+<msg time="2026-10-07T12:51:57.657261" level="INFO">Starting process:
+docker compose stop rogue-app</msg>
+<msg time="2026-10-07T12:51:57.660497" level="INFO">Waiting for process to complete.</msg>
+<msg time="2026-10-07T12:51:57.867284" level="INFO">Process completed.</msg>
+<msg time="2026-10-07T12:51:57.867496" level="INFO">${result} = &lt;result object with rc 0&gt;</msg>
+<var>${result}</var>
+<arg>docker</arg>
+<arg>compose</arg>
+<arg>stop</arg>
+<arg>rogue-app</arg>
+<doc>Runs a process and waits for it to complete.</doc>
+<status status="PASS" start="2026-10-07T12:51:57.657099" elapsed="0.210464"/>
+</kw>
+<if>
+<branch type="IF" condition="${result.rc} != 0">
+<kw name="Log" owner="BuiltIn">
+<arg>Rogue load was already stopped or unavailable: ${result.stderr}</arg>
+<arg>WARN</arg>
+<doc>Logs the given message with the given level.</doc>
+<status status="NOT RUN" start="2026-10-07T12:51:57.867918" elapsed="0.000015"/>
+</kw>
+<status status="NOT RUN" start="2026-10-07T12:51:57.867685" elapsed="0.000261"/>
+</branch>
+<status status="PASS" start="2026-10-07T12:51:57.867657" elapsed="0.000301"/>
+</if>
+<status status="PASS" start="2026-10-07T12:51:57.657000" elapsed="0.210991"/>
+</kw>
+<status status="PASS" start="2026-10-07T12:51:42.385238" elapsed="15.482770"/>
+</suite>
+<status status="PASS" start="2026-10-07T12:51:42.384916" elapsed="15.483417"/>
+</suite>
+<suite id="s1-s2" name="Load" source="/Users/sanjaykumar/Desktop/work/vwif/project/automotive-edge-performance-lab/tests/load">
+<suite id="s1-s2-s1" name="Rogue Load" source="/Users/sanjaykumar/Desktop/work/vwif/project/automotive-edge-performance-lab/tests/load/rogue_load.robot">
+<kw name="Prepare Performance Suite" owner="test_lifecycle" type="SETUP">
+<kw name="Run Process" owner="Process">
+<msg time="2026-10-07T12:51:57.871119" level="INFO">Starting process:
+docker compose up -d ecu-service</msg>
+<msg time="2026-10-07T12:51:57.873772" level="INFO">Waiting for process to complete.</msg>
+<msg time="2026-10-07T12:51:57.946302" level="INFO">Process completed.</msg>
+<msg time="2026-10-07T12:51:57.946493" level="INFO">${result} = &lt;result object with rc 0&gt;</msg>
+<var>${result}</var>
+<arg>docker</arg>
+<arg>compose</arg>
+<arg>up</arg>
+<arg>-d</arg>
+<arg>ecu-service</arg>
+<doc>Runs a process and waits for it to complete.</doc>
+<status status="PASS" start="2026-10-07T12:51:57.870932" elapsed="0.075579"/>
+</kw>
+<kw name="Should Be Equal As Integers" owner="BuiltIn">
+<msg time="2026-10-07T12:51:57.947048" level="INFO">Argument types are:
+&lt;class 'int'&gt;
+&lt;class 'str'&gt;</msg>
+<arg>${result.rc}</arg>
+<arg>0</arg>
+<arg>Could not start ecu-service: ${result.stderr}</arg>
+<doc>Fails if objects are unequal after converting them to integers.</doc>
+<status status="PASS" start="2026-10-07T12:51:57.946689" elapsed="0.000389"/>
+</kw>
+<kw name="Stop Rogue Load" owner="test_lifecycle">
+<kw name="Run Process" owner="Process">
+<msg time="2026-10-07T12:51:57.947491" level="INFO">Starting process:
+docker compose stop rogue-app</msg>
+<msg time="2026-10-07T12:51:57.950191" level="INFO">Waiting for process to complete.</msg>
+<msg time="2026-10-07T12:51:58.008593" level="INFO">Process completed.</msg>
+<msg time="2026-10-07T12:51:58.008779" level="INFO">${result} = &lt;result object with rc 0&gt;</msg>
+<var>${result}</var>
+<arg>docker</arg>
+<arg>compose</arg>
+<arg>stop</arg>
+<arg>rogue-app</arg>
+<doc>Runs a process and waits for it to complete.</doc>
+<status status="PASS" start="2026-10-07T12:51:57.947325" elapsed="0.061474"/>
+</kw>
+<if>
+<branch type="IF" condition="${result.rc} != 0">
+<kw name="Log" owner="BuiltIn">
+<arg>Rogue load was already stopped or unavailable: ${result.stderr}</arg>
+<arg>WARN</arg>
+<doc>Logs the given message with the given level.</doc>
+<status status="NOT RUN" start="2026-10-07T12:51:58.009151" elapsed="0.000014"/>
+</kw>
+<status status="NOT RUN" start="2026-10-07T12:51:58.008907" elapsed="0.000274"/>
+</branch>
+<status status="PASS" start="2026-10-07T12:51:58.008886" elapsed="0.000306"/>
+</if>
+<status status="PASS" start="2026-10-07T12:51:57.947205" elapsed="0.062024"/>
+</kw>
+<status status="PASS" start="2026-10-07T12:51:57.870831" elapsed="0.138416"/>
+</kw>
+<test id="s1-s2-s1-t1" name="Verify ECU Performance Under Rogue Load" line="18">
+<kw name="Run Process" owner="Process">
+<msg time="2026-10-07T12:51:58.009891" level="INFO">Starting process:
+docker compose up -d rogue-app</msg>
+<msg time="2026-10-07T12:51:58.012581" level="INFO">Waiting for process to complete.</msg>
+<msg time="2026-10-07T12:51:58.160573" level="INFO">Process completed.</msg>
+<arg>docker</arg>
+<arg>compose</arg>
+<arg>up</arg>
+<arg>-d</arg>
+<arg>rogue-app</arg>
+<doc>Runs a process and waits for it to complete.</doc>
+<status status="PASS" start="2026-10-07T12:51:58.009552" elapsed="0.151171"/>
+</kw>
+<kw name="Sleep" owner="BuiltIn">
+<msg time="2026-10-07T12:52:03.161736" level="INFO">Slept 5 seconds.</msg>
+<arg>5s</arg>
+<doc>Pauses execution for the given time.</doc>
+<status status="PASS" start="2026-10-07T12:51:58.160946" elapsed="5.000911"/>
+</kw>
+<kw name="Measure Container" owner="PerformanceLibrary">
+<msg time="2026-10-07T12:52:17.512937" level="INFO">Time=3.31s CPU=100.92% RAM=22.19 MB
+Time=8.33s CPU=101.35% RAM=21.98 MB
+Time=13.34s CPU=101.04% RAM=22.08 MB</msg>
+<msg time="2026-10-07T12:52:17.513129" level="INFO">${result} = {'cpu_avg': 101.1, 'cpu_max': 101.35, 'memory_avg': 22.08, 'memory_max': 22.19, 'samples': 3, 'csv_file': 'results/run-20261007-125142/load.csv'}</msg>
+<var>${result}</var>
+<arg>${CONTAINER}</arg>
+<arg>${DURATION}</arg>
+<arg>${INTERVAL}</arg>
+<arg>${RESULTS_DIR}/load.csv</arg>
+<status status="PASS" start="2026-10-07T12:52:03.162017" elapsed="14.351141"/>
+</kw>
+<kw name="Generate Graphs" owner="PerformanceLibrary">
+<msg time="2026-10-07T12:52:17.593719" level="INFO">${graphs} = {'cpu_graph': 'results/run-20261007-125142/load_cpu.png', 'memory_graph': 'results/run-20261007-125142/load_memory.png'}</msg>
+<var>${graphs}</var>
+<arg>${RESULTS_DIR}/load.csv</arg>
+<arg>${RESULTS_DIR}/load</arg>
+<status status="PASS" start="2026-10-07T12:52:17.513313" elapsed="0.080431"/>
+</kw>
+<kw name="Set Variable" owner="BuiltIn">
+<msg time="2026-10-07T12:52:17.594034" level="INFO">${cpu_avg} = 101.1</msg>
+<var>${cpu_avg}</var>
+<arg>${result}[cpu_avg]</arg>
+<doc>Returns the given values which can then be assigned to a variable.</doc>
+<status status="PASS" start="2026-10-07T12:52:17.593845" elapsed="0.000201"/>
+</kw>
+<kw name="Set Variable" owner="BuiltIn">
+<msg time="2026-10-07T12:52:17.594201" level="INFO">${cpu_max} = 101.35</msg>
+<var>${cpu_max}</var>
+<arg>${result}[cpu_max]</arg>
+<doc>Returns the given values which can then be assigned to a variable.</doc>
+<status status="PASS" start="2026-10-07T12:52:17.594094" elapsed="0.000116"/>
+</kw>
+<kw name="Set Variable" owner="BuiltIn">
+<msg time="2026-10-07T12:52:17.594349" level="INFO">${memory_max} = 22.19</msg>
+<var>${memory_max}</var>
+<arg>${result}[memory_max]</arg>
+<doc>Returns the given values which can then be assigned to a variable.</doc>
+<status status="PASS" start="2026-10-07T12:52:17.594252" elapsed="0.000106"/>
+</kw>
+<kw name="Log" owner="BuiltIn">
+<msg time="2026-10-07T12:52:17.594517" level="INFO">Average CPU under load: 101.1 %</msg>
+<arg>Average CPU under load: ${cpu_avg} %</arg>
+<doc>Logs the given message with the given level.</doc>
+<status status="PASS" start="2026-10-07T12:52:17.594423" elapsed="0.000111"/>
+</kw>
+<kw name="Log" owner="BuiltIn">
+<msg time="2026-10-07T12:52:17.594668" level="INFO">Maximum CPU under load: 101.35 %</msg>
+<arg>Maximum CPU under load: ${cpu_max} %</arg>
+<doc>Logs the given message with the given level.</doc>
+<status status="PASS" start="2026-10-07T12:52:17.594591" elapsed="0.000092"/>
+</kw>
+<kw name="Log" owner="BuiltIn">
+<msg time="2026-10-07T12:52:17.594819" level="INFO">Maximum RAM under load: 22.19 MB</msg>
+<arg>Maximum RAM under load: ${memory_max} MB</arg>
+<doc>Logs the given message with the given level.</doc>
+<status status="PASS" start="2026-10-07T12:52:17.594743" elapsed="0.000091"/>
+</kw>
+<kw name="Should Be True" owner="BuiltIn">
+<arg>${cpu_avg} &gt; ${LOAD}[min_cpu_avg]</arg>
+<arg>RogueApp did not generate enough CPU load. Actual=${cpu_avg}% Minimum=${LOAD}[min_cpu_avg]%</arg>
+<doc>Fails if the given condition is not true.</doc>
+<status status="PASS" start="2026-10-07T12:52:17.594877" elapsed="0.000184"/>
+</kw>
+<kw name="Should Be True" owner="BuiltIn">
+<arg>${cpu_avg} &lt; ${LOAD}[max_cpu_avg]</arg>
+<arg>ECU CPU exceeded allowed load limit. Actual=${cpu_avg}% Maximum=${LOAD}[max_cpu_avg]%</arg>
+<doc>Fails if the given condition is not true.</doc>
+<status status="PASS" start="2026-10-07T12:52:17.595106" elapsed="0.000134"/>
+</kw>
+<kw name="Should Be True" owner="BuiltIn">
+<arg>${memory_max} &lt; ${LOAD}[max_memory_mb]</arg>
+<arg>Memory limit exceeded. Actual=${memory_max} MB Maximum=${LOAD}[max_memory_mb] MB</arg>
+<doc>Fails if the given condition is not true.</doc>
+<status status="PASS" start="2026-10-07T12:52:17.595301" elapsed="0.000123"/>
+</kw>
+<kw name="Stop Rogue Load" owner="test_lifecycle" type="TEARDOWN">
+<kw name="Run Process" owner="Process">
+<msg time="2026-10-07T12:52:17.595857" level="INFO">Starting process:
+docker compose stop rogue-app</msg>
+<msg time="2026-10-07T12:52:17.598829" level="INFO">Waiting for process to complete.</msg>
+<msg time="2026-10-07T12:52:27.779621" level="INFO">Process completed.</msg>
+<msg time="2026-10-07T12:52:27.780015" level="INFO">${result} = &lt;result object with rc 0&gt;</msg>
+<var>${result}</var>
+<arg>docker</arg>
+<arg>compose</arg>
+<arg>stop</arg>
+<arg>rogue-app</arg>
+<doc>Runs a process and waits for it to complete.</doc>
+<status status="PASS" start="2026-10-07T12:52:17.595718" elapsed="10.184348"/>
+</kw>
+<if>
+<branch type="IF" condition="${result.rc} != 0">
+<kw name="Log" owner="BuiltIn">
+<arg>Rogue load was already stopped or unavailable: ${result.stderr}</arg>
+<arg>WARN</arg>
+<doc>Logs the given message with the given level.</doc>
+<status status="NOT RUN" start="2026-10-07T12:52:27.780854" elapsed="0.000037"/>
+</kw>
+<status status="NOT RUN" start="2026-10-07T12:52:27.780303" elapsed="0.000628"/>
+</branch>
+<status status="PASS" start="2026-10-07T12:52:27.780244" elapsed="0.000714"/>
+</if>
+<status status="PASS" start="2026-10-07T12:52:17.595580" elapsed="10.185476"/>
+</kw>
+<status status="PASS" start="2026-10-07T12:51:58.009302" elapsed="29.771824"/>
+</test>
+<kw name="Stop Rogue Load" owner="test_lifecycle" type="TEARDOWN">
+<kw name="Run Process" owner="Process">
+<msg time="2026-10-07T12:52:27.783315" level="INFO">Starting process:
+docker compose stop rogue-app</msg>
+<msg time="2026-10-07T12:52:27.788619" level="INFO">Waiting for process to complete.</msg>
+<msg time="2026-10-07T12:52:27.875529" level="INFO">Process completed.</msg>
+<msg time="2026-10-07T12:52:27.875735" level="INFO">${result} = &lt;result object with rc 0&gt;</msg>
+<var>${result}</var>
+<arg>docker</arg>
+<arg>compose</arg>
+<arg>stop</arg>
+<arg>rogue-app</arg>
+<doc>Runs a process and waits for it to complete.</doc>
+<status status="PASS" start="2026-10-07T12:52:27.782741" elapsed="0.093014"/>
+</kw>
+<if>
+<branch type="IF" condition="${result.rc} != 0">
+<kw name="Log" owner="BuiltIn">
+<arg>Rogue load was already stopped or unavailable: ${result.stderr}</arg>
+<arg>WARN</arg>
+<doc>Logs the given message with the given level.</doc>
+<status status="NOT RUN" start="2026-10-07T12:52:27.876149" elapsed="0.000016"/>
+</kw>
+<status status="NOT RUN" start="2026-10-07T12:52:27.875875" elapsed="0.000307"/>
+</branch>
+<status status="PASS" start="2026-10-07T12:52:27.875849" elapsed="0.000345"/>
+</if>
+<status status="PASS" start="2026-10-07T12:52:27.782387" elapsed="0.093846"/>
+</kw>
+<status status="PASS" start="2026-10-07T12:51:57.869353" elapsed="30.006897"/>
+</suite>
+<status status="PASS" start="2026-10-07T12:51:57.868462" elapsed="30.008119"/>
+</suite>
+<suite id="s1-s3" name="Recovery" source="/Users/sanjaykumar/Desktop/work/vwif/project/automotive-edge-performance-lab/tests/recovery">
+<suite id="s1-s3-s1" name="Recovery" source="/Users/sanjaykumar/Desktop/work/vwif/project/automotive-edge-performance-lab/tests/recovery/recovery.robot">
+<kw name="Prepare Performance Suite" owner="test_lifecycle" type="SETUP">
+<kw name="Run Process" owner="Process">
+<msg time="2026-10-07T12:52:27.879521" level="INFO">Starting process:
+docker compose up -d ecu-service</msg>
+<msg time="2026-10-07T12:52:27.882744" level="INFO">Waiting for process to complete.</msg>
+<msg time="2026-10-07T12:52:27.962767" level="INFO">Process completed.</msg>
+<msg time="2026-10-07T12:52:27.962961" level="INFO">${result} = &lt;result object with rc 0&gt;</msg>
+<var>${result}</var>
+<arg>docker</arg>
+<arg>compose</arg>
+<arg>up</arg>
+<arg>-d</arg>
+<arg>ecu-service</arg>
+<doc>Runs a process and waits for it to complete.</doc>
+<status status="PASS" start="2026-10-07T12:52:27.879311" elapsed="0.083668"/>
+</kw>
+<kw name="Should Be Equal As Integers" owner="BuiltIn">
+<msg time="2026-10-07T12:52:27.963560" level="INFO">Argument types are:
+&lt;class 'int'&gt;
+&lt;class 'str'&gt;</msg>
+<arg>${result.rc}</arg>
+<arg>0</arg>
+<arg>Could not start ecu-service: ${result.stderr}</arg>
+<doc>Fails if objects are unequal after converting them to integers.</doc>
+<status status="PASS" start="2026-10-07T12:52:27.963172" elapsed="0.000416"/>
+</kw>
+<kw name="Stop Rogue Load" owner="test_lifecycle">
+<kw name="Run Process" owner="Process">
+<msg time="2026-10-07T12:52:27.964006" level="INFO">Starting process:
+docker compose stop rogue-app</msg>
+<msg time="2026-10-07T12:52:27.966790" level="INFO">Waiting for process to complete.</msg>
+<msg time="2026-10-07T12:52:28.027780" level="INFO">Process completed.</msg>
+<msg time="2026-10-07T12:52:28.027961" level="INFO">${result} = &lt;result object with rc 0&gt;</msg>
+<var>${result}</var>
+<arg>docker</arg>
+<arg>compose</arg>
+<arg>stop</arg>
+<arg>rogue-app</arg>
+<doc>Runs a process and waits for it to complete.</doc>
+<status status="PASS" start="2026-10-07T12:52:27.963831" elapsed="0.064147"/>
+</kw>
+<if>
+<branch type="IF" condition="${result.rc} != 0">
+<kw name="Log" owner="BuiltIn">
+<arg>Rogue load was already stopped or unavailable: ${result.stderr}</arg>
+<arg>WARN</arg>
+<doc>Logs the given message with the given level.</doc>
+<status status="NOT RUN" start="2026-10-07T12:52:28.028351" elapsed="0.000014"/>
+</kw>
+<status status="NOT RUN" start="2026-10-07T12:52:28.028105" elapsed="0.000276"/>
+</branch>
+<status status="PASS" start="2026-10-07T12:52:28.028084" elapsed="0.000307"/>
+</if>
+<status status="PASS" start="2026-10-07T12:52:27.963713" elapsed="0.064713"/>
+</kw>
+<status status="PASS" start="2026-10-07T12:52:27.879186" elapsed="0.149262"/>
+</kw>
+<test id="s1-s3-s1-t1" name="Verify ECU Recovers After Rogue Load" line="16">
+<kw name="Stop Rogue Load" owner="test_lifecycle">
+<kw name="Run Process" owner="Process">
+<msg time="2026-10-07T12:52:28.029249" level="INFO">Starting process:
+docker compose stop rogue-app</msg>
+<msg time="2026-10-07T12:52:28.032275" level="INFO">Waiting for process to complete.</msg>
+<msg time="2026-10-07T12:52:28.084686" level="INFO">Process completed.</msg>
+<msg time="2026-10-07T12:52:28.084860" level="INFO">${result} = &lt;result object with rc 0&gt;</msg>
+<var>${result}</var>
+<arg>docker</arg>
+<arg>compose</arg>
+<arg>stop</arg>
+<arg>rogue-app</arg>
+<doc>Runs a process and waits for it to complete.</doc>
+<status status="PASS" start="2026-10-07T12:52:28.028950" elapsed="0.055925"/>
+</kw>
+<if>
+<branch type="IF" condition="${result.rc} != 0">
+<kw name="Log" owner="BuiltIn">
+<arg>Rogue load was already stopped or unavailable: ${result.stderr}</arg>
+<arg>WARN</arg>
+<doc>Logs the given message with the given level.</doc>
+<status status="NOT RUN" start="2026-10-07T12:52:28.085214" elapsed="0.000014"/>
+</kw>
+<status status="NOT RUN" start="2026-10-07T12:52:28.084986" elapsed="0.000256"/>
+</branch>
+<status status="PASS" start="2026-10-07T12:52:28.084967" elapsed="0.000285"/>
+</if>
+<status status="PASS" start="2026-10-07T12:52:28.028808" elapsed="0.056479"/>
+</kw>
+<kw name="Sleep" owner="BuiltIn">
+<msg time="2026-10-07T12:52:33.086291" level="INFO">Slept 5 seconds.</msg>
+<arg>5s</arg>
+<doc>Pauses execution for the given time.</doc>
+<status status="PASS" start="2026-10-07T12:52:28.085356" elapsed="5.001347"/>
+</kw>
+<kw name="Measure Container" owner="PerformanceLibrary">
+<msg time="2026-10-07T12:52:47.661315" level="INFO">Time=3.5s CPU=0.02% RAM=21.3 MB
+Time=8.53s CPU=0.01% RAM=21.3 MB
+Time=13.56s CPU=0.02% RAM=21.3 MB</msg>
+<msg time="2026-10-07T12:52:47.661641" level="INFO">${result} = {'cpu_avg': 0.02, 'cpu_max': 0.02, 'memory_avg': 21.3, 'memory_max': 21.3, 'samples': 3, 'csv_file': 'results/run-20261007-125142/recovery.csv'}</msg>
+<var>${result}</var>
+<arg>${CONTAINER}</arg>
+<arg>${DURATION}</arg>
+<arg>${INTERVAL}</arg>
+<arg>${RESULTS_DIR}/recovery.csv</arg>
+<status status="PASS" start="2026-10-07T12:52:33.087197" elapsed="14.574595"/>
+</kw>
+<kw name="Generate Graphs" owner="PerformanceLibrary">
+<msg time="2026-10-07T12:52:47.747924" level="INFO">${graphs} = {'cpu_graph': 'results/run-20261007-125142/recovery_cpu.png', 'memory_graph': 'results/run-20261007-125142/recovery_memory.png'}</msg>
+<var>${graphs}</var>
+<arg>${RESULTS_DIR}/recovery.csv</arg>
+<arg>${RESULTS_DIR}/recovery</arg>
+<status status="PASS" start="2026-10-07T12:52:47.662084" elapsed="0.085863"/>
+</kw>
+<kw name="Set Variable" owner="BuiltIn">
+<msg time="2026-10-07T12:52:47.748186" level="INFO">${cpu_avg} = 0.02</msg>
+<var>${cpu_avg}</var>
+<arg>${result}[cpu_avg]</arg>
+<doc>Returns the given values which can then be assigned to a variable.</doc>
+<status status="PASS" start="2026-10-07T12:52:47.748032" elapsed="0.000164"/>
+</kw>
+<kw name="Set Variable" owner="BuiltIn">
+<msg time="2026-10-07T12:52:47.748330" level="INFO">${memory_max} = 21.3</msg>
+<var>${memory_max}</var>
+<arg>${result}[memory_max]</arg>
+<doc>Returns the given values which can then be assigned to a variable.</doc>
+<status status="PASS" start="2026-10-07T12:52:47.748238" elapsed="0.000101"/>
+</kw>
+<kw name="Log" owner="BuiltIn">
+<msg time="2026-10-07T12:52:47.748490" level="INFO">Recovery CPU Average: 0.02 %</msg>
+<arg>Recovery CPU Average: ${cpu_avg} %</arg>
+<doc>Logs the given message with the given level.</doc>
+<status status="PASS" start="2026-10-07T12:52:47.748400" elapsed="0.000105"/>
+</kw>
+<kw name="Log" owner="BuiltIn">
+<msg time="2026-10-07T12:52:47.748633" level="INFO">Recovery RAM Maximum: 21.3 MB</msg>
+<arg>Recovery RAM Maximum: ${memory_max} MB</arg>
+<doc>Logs the given message with the given level.</doc>
+<status status="PASS" start="2026-10-07T12:52:47.748559" elapsed="0.000088"/>
+</kw>
+<kw name="Should Be True" owner="BuiltIn">
+<arg>${cpu_avg} &lt; ${RECOVERY}[max_cpu_avg]</arg>
+<arg>ECU did not recover. CPU still high: ${cpu_avg}%</arg>
+<doc>Fails if the given condition is not true.</doc>
+<status status="PASS" start="2026-10-07T12:52:47.748688" elapsed="0.000150"/>
+</kw>
+<kw name="Should Be True" owner="BuiltIn">
+<arg>${memory_max} &lt; ${RECOVERY}[max_memory_mb]</arg>
+<arg>ECU memory did not recover: ${memory_max} MB</arg>
+<doc>Fails if the given condition is not true.</doc>
+<status status="PASS" start="2026-10-07T12:52:47.748881" elapsed="0.000113"/>
+</kw>
+<status status="PASS" start="2026-10-07T12:52:28.028499" elapsed="19.720550"/>
+</test>
+<kw name="Stop Rogue Load" owner="test_lifecycle" type="TEARDOWN">
+<kw name="Run Process" owner="Process">
+<msg time="2026-10-07T12:52:47.749629" level="INFO">Starting process:
+docker compose stop rogue-app</msg>
+<msg time="2026-10-07T12:52:47.753225" level="INFO">Waiting for process to complete.</msg>
+<msg time="2026-10-07T12:52:47.821917" level="INFO">Process completed.</msg>
+<msg time="2026-10-07T12:52:47.822104" level="INFO">${result} = &lt;result object with rc 0&gt;</msg>
+<var>${result}</var>
+<arg>docker</arg>
+<arg>compose</arg>
+<arg>stop</arg>
+<arg>rogue-app</arg>
+<doc>Runs a process and waits for it to complete.</doc>
+<status status="PASS" start="2026-10-07T12:52:47.749490" elapsed="0.072630"/>
+</kw>
+<if>
+<branch type="IF" condition="${result.rc} != 0">
+<kw name="Log" owner="BuiltIn">
+<arg>Rogue load was already stopped or unavailable: ${result.stderr}</arg>
+<arg>WARN</arg>
+<doc>Logs the given message with the given level.</doc>
+<status status="NOT RUN" start="2026-10-07T12:52:47.822495" elapsed="0.000014"/>
+</kw>
+<status status="NOT RUN" start="2026-10-07T12:52:47.822240" elapsed="0.000285"/>
+</branch>
+<status status="PASS" start="2026-10-07T12:52:47.822216" elapsed="0.000321"/>
+</if>
+<status status="PASS" start="2026-10-07T12:52:47.749380" elapsed="0.073194"/>
+</kw>
+<status status="PASS" start="2026-10-07T12:52:27.877544" elapsed="19.945046"/>
+</suite>
+<status status="PASS" start="2026-10-07T12:52:27.876713" elapsed="19.946177"/>
+</suite>
+<suite id="s1-s4" name="Stability" source="/Users/sanjaykumar/Desktop/work/vwif/project/automotive-edge-performance-lab/tests/stability">
+<suite id="s1-s4-s1" name="Restart Stability" source="/Users/sanjaykumar/Desktop/work/vwif/project/automotive-edge-performance-lab/tests/stability/restart_stability.robot">
+<kw name="Prepare Performance Suite" owner="test_lifecycle" type="SETUP">
+<kw name="Run Process" owner="Process">
+<msg time="2026-10-07T12:52:47.825291" level="INFO">Starting process:
+docker compose up -d ecu-service</msg>
+<msg time="2026-10-07T12:52:47.828389" level="INFO">Waiting for process to complete.</msg>
+<msg time="2026-10-07T12:52:47.902645" level="INFO">Process completed.</msg>
+<msg time="2026-10-07T12:52:47.902852" level="INFO">${result} = &lt;result object with rc 0&gt;</msg>
+<var>${result}</var>
+<arg>docker</arg>
+<arg>compose</arg>
+<arg>up</arg>
+<arg>-d</arg>
+<arg>ecu-service</arg>
+<doc>Runs a process and waits for it to complete.</doc>
+<status status="PASS" start="2026-10-07T12:52:47.825128" elapsed="0.077742"/>
+</kw>
+<kw name="Should Be Equal As Integers" owner="BuiltIn">
+<msg time="2026-10-07T12:52:47.903459" level="INFO">Argument types are:
+&lt;class 'int'&gt;
+&lt;class 'str'&gt;</msg>
+<arg>${result.rc}</arg>
+<arg>0</arg>
+<arg>Could not start ecu-service: ${result.stderr}</arg>
+<doc>Fails if objects are unequal after converting them to integers.</doc>
+<status status="PASS" start="2026-10-07T12:52:47.903067" elapsed="0.000418"/>
+</kw>
+<kw name="Stop Rogue Load" owner="test_lifecycle">
+<kw name="Run Process" owner="Process">
+<msg time="2026-10-07T12:52:47.903877" level="INFO">Starting process:
+docker compose stop rogue-app</msg>
+<msg time="2026-10-07T12:52:47.906543" level="INFO">Waiting for process to complete.</msg>
+<msg time="2026-10-07T12:52:47.962222" level="INFO">Process completed.</msg>
+<msg time="2026-10-07T12:52:47.962389" level="INFO">${result} = &lt;result object with rc 0&gt;</msg>
+<var>${result}</var>
+<arg>docker</arg>
+<arg>compose</arg>
+<arg>stop</arg>
+<arg>rogue-app</arg>
+<doc>Runs a process and waits for it to complete.</doc>
+<status status="PASS" start="2026-10-07T12:52:47.903722" elapsed="0.058683"/>
+</kw>
+<if>
+<branch type="IF" condition="${result.rc} != 0">
+<kw name="Log" owner="BuiltIn">
+<arg>Rogue load was already stopped or unavailable: ${result.stderr}</arg>
+<arg>WARN</arg>
+<doc>Logs the given message with the given level.</doc>
+<status status="NOT RUN" start="2026-10-07T12:52:47.962734" elapsed="0.000013"/>
+</kw>
+<status status="NOT RUN" start="2026-10-07T12:52:47.962499" elapsed="0.000264"/>
+</branch>
+<status status="PASS" start="2026-10-07T12:52:47.962479" elapsed="0.000294"/>
+</if>
+<status status="PASS" start="2026-10-07T12:52:47.903604" elapsed="0.059208"/>
+</kw>
+<status status="PASS" start="2026-10-07T12:52:47.825026" elapsed="0.137805"/>
+</kw>
+<test id="s1-s4-s1-t1" name="Verify ECU Restart Stability" line="20">
+<for flavor="IN RANGE">
+<iter>
+<kw name="Log" owner="BuiltIn">
+<msg time="2026-10-07T12:52:47.963522" level="INFO">Restart cycle: 1</msg>
+<arg>Restart cycle: ${index + 1}</arg>
+<doc>Logs the given message with the given level.</doc>
+<status status="PASS" start="2026-10-07T12:52:47.963276" elapsed="0.000265"/>
+</kw>
+<kw name="Measure Container Startup Time" owner="PerformanceLibrary">
+<msg time="2026-10-07T12:52:58.429597" level="INFO">${startup_time} = 0.28</msg>
+<var>${startup_time}</var>
+<arg>${CONTAINER}</arg>
+<arg>${HEALTH_URL}</arg>
+<arg>${STARTUP_TIMEOUT}</arg>
+<status status="PASS" start="2026-10-07T12:52:47.963582" elapsed="10.466047"/>
+</kw>
+<kw name="Log" owner="BuiltIn">
+<msg time="2026-10-07T12:52:58.430009" level="INFO">Startup time cycle 1: 0.28 seconds</msg>
+<arg>Startup time cycle ${index + 1}: ${startup_time} seconds</arg>
+<doc>Logs the given message with the given level.</doc>
+<status status="PASS" start="2026-10-07T12:52:58.429772" elapsed="0.000259"/>
+</kw>
+<kw name="Should Be True" owner="BuiltIn">
+<arg>${startup_time} &lt; ${STARTUP}[max_seconds]</arg>
+<arg>Startup time exceeded in restart cycle ${index + 1}: ${startup_time}s</arg>
+<doc>Fails if the given condition is not true.</doc>
+<status status="PASS" start="2026-10-07T12:52:58.430088" elapsed="0.000181"/>
+</kw>
+<var name="${index}">0</var>
+<status status="PASS" start="2026-10-07T12:52:47.963217" elapsed="10.467108"/>
+</iter>
+<iter>
+<kw name="Log" owner="BuiltIn">
+<msg time="2026-10-07T12:52:58.430543" level="INFO">Restart cycle: 2</msg>
+<arg>Restart cycle: ${index + 1}</arg>
+<doc>Logs the given message with the given level.</doc>
+<status status="PASS" start="2026-10-07T12:52:58.430446" elapsed="0.000113"/>
+</kw>
+<kw name="Measure Container Startup Time" owner="PerformanceLibrary">
+<msg time="2026-10-07T12:53:08.873222" level="INFO">${startup_time} = 0.32</msg>
+<var>${startup_time}</var>
+<arg>${CONTAINER}</arg>
+<arg>${HEALTH_URL}</arg>
+<arg>${STARTUP_TIMEOUT}</arg>
+<status status="PASS" start="2026-10-07T12:52:58.430591" elapsed="10.442677"/>
+</kw>
+<kw name="Log" owner="BuiltIn">
+<msg time="2026-10-07T12:53:08.873831" level="INFO">Startup time cycle 2: 0.32 seconds</msg>
+<arg>Startup time cycle ${index + 1}: ${startup_time} seconds</arg>
+<doc>Logs the given message with the given level.</doc>
+<status status="PASS" start="2026-10-07T12:53:08.873473" elapsed="0.000396"/>
+</kw>
+<kw name="Should Be True" owner="BuiltIn">
+<arg>${startup_time} &lt; ${STARTUP}[max_seconds]</arg>
+<arg>Startup time exceeded in restart cycle ${index + 1}: ${startup_time}s</arg>
+<doc>Fails if the given condition is not true.</doc>
+<status status="PASS" start="2026-10-07T12:53:08.873987" elapsed="0.000438"/>
+</kw>
+<var name="${index}">1</var>
+<status status="PASS" start="2026-10-07T12:52:58.430388" elapsed="10.444088"/>
+</iter>
+<iter>
+<kw name="Log" owner="BuiltIn">
+<msg time="2026-10-07T12:53:08.874989" level="INFO">Restart cycle: 3</msg>
+<arg>Restart cycle: ${index + 1}</arg>
+<doc>Logs the given message with the given level.</doc>
+<status status="PASS" start="2026-10-07T12:53:08.874723" elapsed="0.000319"/>
+</kw>
+<kw name="Measure Container Startup Time" owner="PerformanceLibrary">
+<msg time="2026-10-07T12:53:19.320324" level="INFO">${startup_time} = 0.32</msg>
+<var>${startup_time}</var>
+<arg>${CONTAINER}</arg>
+<arg>${HEALTH_URL}</arg>
+<arg>${STARTUP_TIMEOUT}</arg>
+<status status="PASS" start="2026-10-07T12:53:08.875122" elapsed="10.445262"/>
+</kw>
+<kw name="Log" owner="BuiltIn">
+<msg time="2026-10-07T12:53:19.320990" level="INFO">Startup time cycle 3: 0.32 seconds</msg>
+<arg>Startup time cycle ${index + 1}: ${startup_time} seconds</arg>
+<doc>Logs the given message with the given level.</doc>
+<status status="PASS" start="2026-10-07T12:53:19.320609" elapsed="0.000421"/>
+</kw>
+<kw name="Should Be True" owner="BuiltIn">
+<arg>${startup_time} &lt; ${STARTUP}[max_seconds]</arg>
+<arg>Startup time exceeded in restart cycle ${index + 1}: ${startup_time}s</arg>
+<doc>Fails if the given condition is not true.</doc>
+<status status="PASS" start="2026-10-07T12:53:19.321130" elapsed="0.000289"/>
+</kw>
+<var name="${index}">2</var>
+<status status="PASS" start="2026-10-07T12:53:08.874587" elapsed="10.446866"/>
+</iter>
+<iter>
+<kw name="Log" owner="BuiltIn">
+<msg time="2026-10-07T12:53:19.321813" level="INFO">Restart cycle: 4</msg>
+<arg>Restart cycle: ${index + 1}</arg>
+<doc>Logs the given message with the given level.</doc>
+<status status="PASS" start="2026-10-07T12:53:19.321649" elapsed="0.000193"/>
+</kw>
+<kw name="Measure Container Startup Time" owner="PerformanceLibrary">
+<msg time="2026-10-07T12:53:29.765427" level="INFO">${startup_time} = 0.32</msg>
+<var>${startup_time}</var>
+<arg>${CONTAINER}</arg>
+<arg>${HEALTH_URL}</arg>
+<arg>${STARTUP_TIMEOUT}</arg>
+<status status="PASS" start="2026-10-07T12:53:19.321902" elapsed="10.443566"/>
+</kw>
+<kw name="Log" owner="BuiltIn">
+<msg time="2026-10-07T12:53:29.766047" level="INFO">Startup time cycle 4: 0.32 seconds</msg>
+<arg>Startup time cycle ${index + 1}: ${startup_time} seconds</arg>
+<doc>Logs the given message with the given level.</doc>
+<status status="PASS" start="2026-10-07T12:53:29.765685" elapsed="0.000396"/>
+</kw>
+<kw name="Should Be True" owner="BuiltIn">
+<arg>${startup_time} &lt; ${STARTUP}[max_seconds]</arg>
+<arg>Startup time exceeded in restart cycle ${index + 1}: ${startup_time}s</arg>
+<doc>Fails if the given condition is not true.</doc>
+<status status="PASS" start="2026-10-07T12:53:29.766176" elapsed="0.000293"/>
+</kw>
+<var name="${index}">3</var>
+<status status="PASS" start="2026-10-07T12:53:19.321539" elapsed="10.444961"/>
+</iter>
+<iter>
+<kw name="Log" owner="BuiltIn">
+<msg time="2026-10-07T12:53:29.766922" level="INFO">Restart cycle: 5</msg>
+<arg>Restart cycle: ${index + 1}</arg>
+<doc>Logs the given message with the given level.</doc>
+<status status="PASS" start="2026-10-07T12:53:29.766720" elapsed="0.000233"/>
+</kw>
+<kw name="Measure Container Startup Time" owner="PerformanceLibrary">
+<msg time="2026-10-07T12:53:40.226100" level="INFO">${startup_time} = 0.31</msg>
+<var>${startup_time}</var>
+<arg>${CONTAINER}</arg>
+<arg>${HEALTH_URL}</arg>
+<arg>${STARTUP_TIMEOUT}</arg>
+<status status="PASS" start="2026-10-07T12:53:29.767018" elapsed="10.459109"/>
+</kw>
+<kw name="Log" owner="BuiltIn">
+<msg time="2026-10-07T12:53:40.226502" level="INFO">Startup time cycle 5: 0.31 seconds</msg>
+<arg>Startup time cycle ${index + 1}: ${startup_time} seconds</arg>
+<doc>Logs the given message with the given level.</doc>
+<status status="PASS" start="2026-10-07T12:53:40.226261" elapsed="0.000259"/>
+</kw>
+<kw name="Should Be True" owner="BuiltIn">
+<arg>${startup_time} &lt; ${STARTUP}[max_seconds]</arg>
+<arg>Startup time exceeded in restart cycle ${index + 1}: ${startup_time}s</arg>
+<doc>Fails if the given condition is not true.</doc>
+<status status="PASS" start="2026-10-07T12:53:40.226570" elapsed="0.000172"/>
+</kw>
+<var name="${index}">4</var>
+<status status="PASS" start="2026-10-07T12:53:29.766594" elapsed="10.460165"/>
+</iter>
+<var>${index}</var>
+<value>${RESTART_COUNT}</value>
+<status status="PASS" start="2026-10-07T12:52:47.963088" elapsed="52.263690"/>
+</for>
+<status status="PASS" start="2026-10-07T12:52:47.962881" elapsed="52.263964"/>
+</test>
+<kw name="Stop Rogue Load" owner="test_lifecycle" type="TEARDOWN">
+<kw name="Run Process" owner="Process">
+<msg time="2026-10-07T12:53:40.227489" level="INFO">Starting process:
+docker compose stop rogue-app</msg>
+<msg time="2026-10-07T12:53:40.237610" level="INFO">Waiting for process to complete.</msg>
+<msg time="2026-10-07T12:53:40.409642" level="INFO">Process completed.</msg>
+<msg time="2026-10-07T12:53:40.409828" level="INFO">${result} = &lt;result object with rc 0&gt;</msg>
+<var>${result}</var>
+<arg>docker</arg>
+<arg>compose</arg>
+<arg>stop</arg>
+<arg>rogue-app</arg>
+<doc>Runs a process and waits for it to complete.</doc>
+<status status="PASS" start="2026-10-07T12:53:40.227252" elapsed="0.182595"/>
+</kw>
+<if>
+<branch type="IF" condition="${result.rc} != 0">
+<kw name="Log" owner="BuiltIn">
+<arg>Rogue load was already stopped or unavailable: ${result.stderr}</arg>
+<arg>WARN</arg>
+<doc>Logs the given message with the given level.</doc>
+<status status="NOT RUN" start="2026-10-07T12:53:40.410213" elapsed="0.000017"/>
+</kw>
+<status status="NOT RUN" start="2026-10-07T12:53:40.409958" elapsed="0.000294"/>
+</branch>
+<status status="PASS" start="2026-10-07T12:53:40.409930" elapsed="0.000333"/>
+</if>
+<status status="PASS" start="2026-10-07T12:53:40.227136" elapsed="0.183169"/>
+</kw>
+<status status="PASS" start="2026-10-07T12:52:47.823798" elapsed="52.586522"/>
+</suite>
+<status status="PASS" start="2026-10-07T12:52:47.823025" elapsed="52.587594"/>
+</suite>
+<suite id="s1-s5" name="Startup" source="/Users/sanjaykumar/Desktop/work/vwif/project/automotive-edge-performance-lab/tests/startup">
+<suite id="s1-s5-s1" name="Startup Time" source="/Users/sanjaykumar/Desktop/work/vwif/project/automotive-edge-performance-lab/tests/startup/startup_time.robot">
+<kw name="Prepare Performance Suite" owner="test_lifecycle" type="SETUP">
+<kw name="Run Process" owner="Process">
+<msg time="2026-10-07T12:53:40.413505" level="INFO">Starting process:
+docker compose up -d ecu-service</msg>
+<msg time="2026-10-07T12:53:40.420850" level="INFO">Waiting for process to complete.</msg>
+<msg time="2026-10-07T12:53:40.507935" level="INFO">Process completed.</msg>
+<msg time="2026-10-07T12:53:40.508190" level="INFO">${result} = &lt;result object with rc 0&gt;</msg>
+<var>${result}</var>
+<arg>docker</arg>
+<arg>compose</arg>
+<arg>up</arg>
+<arg>-d</arg>
+<arg>ecu-service</arg>
+<doc>Runs a process and waits for it to complete.</doc>
+<status status="PASS" start="2026-10-07T12:53:40.413296" elapsed="0.094912"/>
+</kw>
+<kw name="Should Be Equal As Integers" owner="BuiltIn">
+<msg time="2026-10-07T12:53:40.508776" level="INFO">Argument types are:
+&lt;class 'int'&gt;
+&lt;class 'str'&gt;</msg>
+<arg>${result.rc}</arg>
+<arg>0</arg>
+<arg>Could not start ecu-service: ${result.stderr}</arg>
+<doc>Fails if objects are unequal after converting them to integers.</doc>
+<status status="PASS" start="2026-10-07T12:53:40.508382" elapsed="0.000421"/>
+</kw>
+<kw name="Stop Rogue Load" owner="test_lifecycle">
+<kw name="Run Process" owner="Process">
+<msg time="2026-10-07T12:53:40.509264" level="INFO">Starting process:
+docker compose stop rogue-app</msg>
+<msg time="2026-10-07T12:53:40.512288" level="INFO">Waiting for process to complete.</msg>
+<msg time="2026-10-07T12:53:40.585681" level="INFO">Process completed.</msg>
+<msg time="2026-10-07T12:53:40.585906" level="INFO">${result} = &lt;result object with rc 0&gt;</msg>
+<var>${result}</var>
+<arg>docker</arg>
+<arg>compose</arg>
+<arg>stop</arg>
+<arg>rogue-app</arg>
+<doc>Runs a process and waits for it to complete.</doc>
+<status status="PASS" start="2026-10-07T12:53:40.509085" elapsed="0.076840"/>
+</kw>
+<if>
+<branch type="IF" condition="${result.rc} != 0">
+<kw name="Log" owner="BuiltIn">
+<arg>Rogue load was already stopped or unavailable: ${result.stderr}</arg>
+<arg>WARN</arg>
+<doc>Logs the given message with the given level.</doc>
+<status status="NOT RUN" start="2026-10-07T12:53:40.586312" elapsed="0.000017"/>
+</kw>
+<status status="NOT RUN" start="2026-10-07T12:53:40.586048" elapsed="0.000299"/>
+</branch>
+<status status="PASS" start="2026-10-07T12:53:40.586019" elapsed="0.000339"/>
+</if>
+<status status="PASS" start="2026-10-07T12:53:40.508949" elapsed="0.077456"/>
+</kw>
+<status status="PASS" start="2026-10-07T12:53:40.413175" elapsed="0.173255"/>
+</kw>
+<test id="s1-s5-s1-t1" name="Verify ECU Startup Time" line="17">
+<kw name="Measure Container Startup Time" owner="PerformanceLibrary">
+<msg time="2026-10-07T12:53:51.050168" level="INFO">${startup_time} = 0.28</msg>
+<var>${startup_time}</var>
+<arg>${CONTAINER}</arg>
+<arg>${HEALTH_URL}</arg>
+<arg>${STARTUP_TIMEOUT}</arg>
+<status status="PASS" start="2026-10-07T12:53:40.586722" elapsed="10.463485"/>
+</kw>
+<kw name="Log" owner="BuiltIn">
+<msg time="2026-10-07T12:53:51.050583" level="INFO">ECU startup time: 0.28 seconds</msg>
+<arg>ECU startup time: ${startup_time} seconds</arg>
+<doc>Logs the given message with the given level.</doc>
+<status status="PASS" start="2026-10-07T12:53:51.050346" elapsed="0.000256"/>
+</kw>
+<kw name="Should Be True" owner="BuiltIn">
+<arg>${startup_time} &lt; ${STARTUP}[max_seconds]</arg>
+<arg>ECU startup time exceeded limit. Actual=${startup_time}s Maximum=${STARTUP}[max_seconds]s</arg>
+<doc>Fails if the given condition is not true.</doc>
+<status status="PASS" start="2026-10-07T12:53:51.050654" elapsed="0.000186"/>
+</kw>
+<status status="PASS" start="2026-10-07T12:53:40.586492" elapsed="10.464400"/>
+</test>
+<kw name="Stop Rogue Load" owner="test_lifecycle" type="TEARDOWN">
+<kw name="Run Process" owner="Process">
+<msg time="2026-10-07T12:53:51.051436" level="INFO">Starting process:
+docker compose stop rogue-app</msg>
+<msg time="2026-10-07T12:53:51.054675" level="INFO">Waiting for process to complete.</msg>
+<msg time="2026-10-07T12:53:51.139702" level="INFO">Process completed.</msg>
+<msg time="2026-10-07T12:53:51.139930" level="INFO">${result} = &lt;result object with rc 0&gt;</msg>
+<var>${result}</var>
+<arg>docker</arg>
+<arg>compose</arg>
+<arg>stop</arg>
+<arg>rogue-app</arg>
+<doc>Runs a process and waits for it to complete.</doc>
+<status status="PASS" start="2026-10-07T12:53:51.051236" elapsed="0.088712"/>
+</kw>
+<if>
+<branch type="IF" condition="${result.rc} != 0">
+<kw name="Log" owner="BuiltIn">
+<arg>Rogue load was already stopped or unavailable: ${result.stderr}</arg>
+<arg>WARN</arg>
+<doc>Logs the given message with the given level.</doc>
+<status status="NOT RUN" start="2026-10-07T12:53:51.140307" elapsed="0.000016"/>
+</kw>
+<status status="NOT RUN" start="2026-10-07T12:53:51.140057" elapsed="0.000281"/>
+</branch>
+<status status="PASS" start="2026-10-07T12:53:51.140037" elapsed="0.000312"/>
+</if>
+<status status="PASS" start="2026-10-07T12:53:51.051131" elapsed="0.089259"/>
+</kw>
+<status status="PASS" start="2026-10-07T12:53:40.411562" elapsed="10.728842"/>
+</suite>
+<status status="PASS" start="2026-10-07T12:53:40.410758" elapsed="10.729947"/>
+</suite>
+<status status="PASS" start="2026-10-07T12:51:42.370415" elapsed="128.770478"/>
+</suite>
+<statistics>
+<total>
+<stat pass="5" fail="0" skip="0">All Tests</stat>
+</total>
+<tag>
+</tag>
+<suite>
+<stat name="Tests" id="s1" pass="5" fail="0" skip="0">Tests</stat>
+<stat name="Idle State" id="s1-s1" pass="1" fail="0" skip="0">Tests.Idle State</stat>
+<stat name="Idle Performance" id="s1-s1-s1" pass="1" fail="0" skip="0">Tests.Idle State.Idle Performance</stat>
+<stat name="Load" id="s1-s2" pass="1" fail="0" skip="0">Tests.Load</stat>
+<stat name="Rogue Load" id="s1-s2-s1" pass="1" fail="0" skip="0">Tests.Load.Rogue Load</stat>
+<stat name="Recovery" id="s1-s3" pass="1" fail="0" skip="0">Tests.Recovery</stat>
+<stat name="Recovery" id="s1-s3-s1" pass="1" fail="0" skip="0">Tests.Recovery.Recovery</stat>
+<stat name="Stability" id="s1-s4" pass="1" fail="0" skip="0">Tests.Stability</stat>
+<stat name="Restart Stability" id="s1-s4-s1" pass="1" fail="0" skip="0">Tests.Stability.Restart Stability</stat>
+<stat name="Startup" id="s1-s5" pass="1" fail="0" skip="0">Tests.Startup</stat>
+<stat name="Startup Time" id="s1-s5-s1" pass="1" fail="0" skip="0">Tests.Startup.Startup Time</stat>
+</suite>
+</statistics>
+<errors>
+</errors>
+</robot>

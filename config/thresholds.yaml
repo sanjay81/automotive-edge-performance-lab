@@ -1,0 +1,16 @@
+idle:
+  max_cpu_avg: 50
+  max_cpu_peak: 90
+  max_memory_mb: 100
+
+load:
+  min_cpu_avg: 50
+  max_cpu_avg: 120
+  max_memory_mb: 100
+
+recovery:
+  max_cpu_avg: 50
+  max_memory_mb: 100
+
+startup:
+  max_seconds: 5

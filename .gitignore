@@ -1,0 +1,7 @@
+.venv/
+__pycache__/
+*.py[cod]
+
+results/*
+!results/run-20261007-125142/
+!results/run-20261007-125142/**

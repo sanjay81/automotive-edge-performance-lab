@@ -1,0 +1,22 @@
+services:
+
+  ecu-service:
+    build:
+      context: ./docker/ecu-service
+    container_name: ecu-service
+
+    ports:
+      - "8080:8080"
+
+
+  rogue-app:
+    build:
+      context: ./docker/rogue-app
+    container_name: rogue-app
+
+    environment:
+      TARGET_URL: http://ecu-service:8080/calculate
+      WORKERS: 4
+
+    depends_on:
+      - ecu-service
