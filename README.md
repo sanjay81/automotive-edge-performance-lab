@@ -66,6 +66,16 @@ source .venv/bin/activate
 python -m pip install -r requirements.txt
 ```
 
+## Run unit tests
+
+The unit tests verify the performance library's calculations and CSV output,
+and check that all configured thresholds are present and valid. They use
+mocks, so they do not require Docker:
+
+```bash
+.venv/bin/pytest -q unit_tests
+```
+
 ## Run the complete suite
 
 ```bash
@@ -88,7 +98,9 @@ robot tests/idle_state/idle_performance.robot
 
 ## Continuous integration
 
-GitHub Actions executes the test suite on pushes to `main`, pull requests, and manual dispatches. CI uploads Robot Framework results, CSV measurements, and graphs as workflow artifacts.
+GitHub Actions runs the unit tests first, then the Docker-backed Robot Framework
+suite on pushes to `main`, pull requests, and manual dispatches. CI uploads the
+Robot reports, CSV measurements, and graphs as workflow artifacts.
 
 ## Test isolation and cleanup
 
