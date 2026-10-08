@@ -16,7 +16,11 @@ services:
 
     environment:
       TARGET_URL: http://ecu-service:8080/calculate
-      WORKERS: 4
+      LOAD_PROFILE: ${LOAD_PROFILE:-medium}
+      LOAD_PROFILE_CONFIG: /app/config/load_profiles.yaml
+
+    volumes:
+      - ./config/load_profiles.yaml:/app/config/load_profiles.yaml:ro
 
     depends_on:
       - ecu-service

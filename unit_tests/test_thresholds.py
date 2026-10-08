@@ -13,6 +13,17 @@ def load_thresholds():
         return yaml.safe_load(file)
 
 
+def load_profiles():
+    config_file = (
+        Path(__file__).parent.parent
+        / "config"
+        / "load_profiles.yaml"
+    )
+
+    with open(config_file, "r") as file:
+        return yaml.safe_load(file)["load_profiles"]
+
+
 def test_threshold_file_loads():
     thresholds = load_thresholds()
 
@@ -67,3 +78,13 @@ def test_cpu_threshold_ranges_are_ordered():
 
     assert thresholds["idle"]["max_cpu_avg"] <= thresholds["idle"]["max_cpu_peak"]
     assert thresholds["load"]["min_cpu_avg"] < thresholds["load"]["max_cpu_avg"]
+
+
+def test_load_profiles_are_configured():
+    profiles = load_profiles()
+
+    assert set(profiles) == {"low", "medium", "high"}
+    assert [profiles[name]["workers"] for name in ("low", "medium", "high")] == [1, 2, 4]
+    for name, profile in profiles.items():
+        assert profile["workers"] > 0, name
+        assert profile["min_cpu_avg"] > 0, name

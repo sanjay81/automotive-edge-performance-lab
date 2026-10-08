@@ -4,6 +4,15 @@ set -euo pipefail
 LAB_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 cd "$LAB_DIR"
 
+LOAD_PROFILE="${1:-${LOAD_PROFILE:-medium}}"
+case "$LOAD_PROFILE" in
+    low|medium|high) ;;
+    *)
+        echo "Unknown load profile '$LOAD_PROFILE'. Choose low, medium, or high." >&2
+        exit 2
+        ;;
+esac
+
 ROBOT_BIN="$LAB_DIR/.venv/bin/robot"
 if [[ ! -x "$ROBOT_BIN" ]]; then
     echo "Robot Framework not found at $ROBOT_BIN" >&2
@@ -17,4 +26,5 @@ OUTPUT_DIR="results/run-$RUN_ID"
 exec "$ROBOT_BIN" \
     --outputdir "$OUTPUT_DIR" \
     --variable "RESULTS_DIR:$OUTPUT_DIR" \
+    --variable "LOAD_PROFILE:$LOAD_PROFILE" \
     tests

@@ -1,0 +1,10 @@
+load_profiles:
+  low:
+    workers: 1
+    min_cpu_avg: 10
+  medium:
+    workers: 2
+    min_cpu_avg: 30
+  high:
+    workers: 4
+    min_cpu_avg: 50

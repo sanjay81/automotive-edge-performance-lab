@@ -2,7 +2,7 @@ FROM python:3.12-slim
 
 WORKDIR /app
 
-RUN pip install requests
+RUN pip install requests PyYAML
 
 COPY load.py .
 

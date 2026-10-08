@@ -82,6 +82,21 @@ mocks, so they do not require Docker:
 ./scripts/run_suite.sh
 ```
 
+The rogue-load scenario supports three configurable concurrency profiles. The
+default is `medium`; select another profile by passing it to the runner:
+
+```bash
+./scripts/run_suite.sh low
+./scripts/run_suite.sh medium
+./scripts/run_suite.sh high
+```
+
+Profile worker counts and minimum CPU expectations are in
+`config/load_profiles.yaml`. The defaults are 1, 2, and 4 concurrent request
+workers for low, medium, and high. The load scenario records the selected
+profile in the Robot log and saves profile-specific measurements and graphs
+such as `load-low.csv` and `load-low_cpu.png`.
+
 Each run creates a timestamped directory in `results/` containing:
 
 - `report.html`
