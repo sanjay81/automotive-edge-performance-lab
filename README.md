@@ -1,6 +1,6 @@
-# Automotive Edge Performance & Stability Lab
+# Embedded Performance Load Lab
 
-[![Performance Lab CI](https://github.com/sanjay81/automotive-edge-performance-lab/actions/workflows/performance-lab.yml/badge.svg)](https://github.com/sanjay81/automotive-edge-performance-lab/actions/workflows/performance-lab.yml)
+[![Embedded Performance Load Lab CI](https://github.com/sanjay81/embedded-performance-load-lab/actions/workflows/performance-lab.yml/badge.svg)](https://github.com/sanjay81/embedded-performance-load-lab/actions/workflows/performance-lab.yml)
 
 A clean-room **embedded/automotive performance-testing POC** built with Robot Framework, Python, Docker and GitHub Actions. It demonstrates how a repeatable test framework can measure ECU-service resource behaviour while idle, under synthetic load, during recovery, and across startup/restart cycles.
 
