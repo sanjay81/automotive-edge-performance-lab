@@ -1,0 +1,40 @@
+{
+  "description": "Medium load does not generate enough CPU activity.",
+  "input": {
+    "run_id": "eval-load-too-weak",
+    "scenarios": {
+      "idle": {
+        "samples": 10,
+        "cpu": {
+          "average": 2.0,
+          "maximum": 4.0,
+          "minimum": 1.0
+        },
+        "memory": {
+          "average_mb": 31.0,
+          "maximum_mb": 32.0,
+          "minimum_mb": 30.0
+        },
+        "duration_seconds": 10
+      },
+      "load-medium": {
+        "samples": 10,
+        "cpu": {
+          "average": 18.0,
+          "maximum": 24.0,
+          "minimum": 12.0
+        },
+        "memory": {
+          "average_mb": 34.0,
+          "maximum_mb": 35.0,
+          "minimum_mb": 33.0
+        },
+        "duration_seconds": 10
+      }
+    }
+  },
+  "expected": {
+    "status": "warning",
+    "recommended_next_test": "load-medium"
+  }
+}

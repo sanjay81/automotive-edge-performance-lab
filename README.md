@@ -46,7 +46,7 @@ GitHub Actions / Local Runner
 |---|---|
 | Idle performance | Measure CPU and memory while the ECU-style service is idle |
 | Rogue load | Observe resource behaviour while synthetic background load is active |
-| Recovery | Verify resource usage settles after the load is removed |
+| Recovery | Apply and measure high load, stop the load, then verify resource usage settles |
 | Startup | Measure service startup time |
 | Restart stability | Repeat startup measurement across multiple restart cycles |
 
@@ -105,6 +105,29 @@ Each run creates a timestamped directory in `results/` containing:
 - scenario CSV measurements such as `idle.csv`, `load.csv`, and `recovery.csv`
 - generated CPU and memory graphs
 
+Build a machine-readable summary from the measurements and Robot results:
+
+```bash
+python ai_agent/build_run_summary.py results/run-<timestamp>
+```
+
+The resulting `run_summary.json` contains the scenario measurements and, when
+`output.xml` is present, Robot's total, passed, failed, and overall status
+counts. It can then be analyzed by the optional AI helper:
+
+```bash
+python ai_agent/analyze_run.py results/run-<timestamp>/run_summary.json
+```
+
+Run the evaluation cases from the project root with:
+
+```bash
+python -m ai_agent.evaluate_agent
+```
+
+Set `OPENAI_API_KEY` in the project-root `.env` file or shell to use the AI
+helper. The dependency is installed through `requirements.txt`.
+
 To execute a single Robot Framework scenario:
 
 ```bash
@@ -115,7 +138,9 @@ robot tests/idle_state/idle_performance.robot
 
 GitHub Actions runs the unit tests first, then the Docker-backed Robot Framework
 suite on pushes to `main`, pull requests, and manual dispatches. CI uploads the
-Robot reports, CSV measurements, and graphs as workflow artifacts.
+Robot reports, CSV measurements, and graphs as workflow artifacts. Generated
+run output under `results/`, including summaries and AI analyses, is ignored by
+Git.
 
 ## Test isolation and cleanup
 

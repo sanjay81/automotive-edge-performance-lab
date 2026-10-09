@@ -43,9 +43,10 @@ def test_load_thresholds_exist():
     thresholds = load_thresholds()
 
     assert "load" in thresholds
-    assert "min_cpu_avg" in thresholds["load"]
     assert "max_cpu_avg" in thresholds["load"]
     assert "max_memory_mb" in thresholds["load"]
+    assert "min_cpu_avg" not in thresholds["load"]
+    assert thresholds["load"]["max_cpu_avg"] == 100
 
 
 def test_recovery_thresholds_exist():
@@ -77,7 +78,7 @@ def test_cpu_threshold_ranges_are_ordered():
     thresholds = load_thresholds()
 
     assert thresholds["idle"]["max_cpu_avg"] <= thresholds["idle"]["max_cpu_peak"]
-    assert thresholds["load"]["min_cpu_avg"] < thresholds["load"]["max_cpu_avg"]
+    assert thresholds["load"]["max_cpu_avg"] == 100
 
 
 def test_load_profiles_are_configured():

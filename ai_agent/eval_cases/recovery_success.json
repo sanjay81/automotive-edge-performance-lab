@@ -1,0 +1,54 @@
+{
+  "description": "CPU returns to normal after load is removed.",
+  "input": {
+    "run_id": "eval-recovery-success",
+    "scenarios": {
+      "idle": {
+        "samples": 10,
+        "cpu": {
+          "average": 2.0,
+          "maximum": 4.0,
+          "minimum": 1.0
+        },
+        "memory": {
+          "average_mb": 31.0,
+          "maximum_mb": 32.0,
+          "minimum_mb": 30.0
+        },
+        "duration_seconds": 10
+      },
+      "load-high": {
+        "samples": 10,
+        "cpu": {
+          "average": 90.0,
+          "maximum": 110.0,
+          "minimum": 70.0
+        },
+        "memory": {
+          "average_mb": 40.0,
+          "maximum_mb": 45.0,
+          "minimum_mb": 38.0
+        },
+        "duration_seconds": 10
+      },
+      "recovery": {
+        "samples": 10,
+        "cpu": {
+          "average": 4.0,
+          "maximum": 8.0,
+          "minimum": 2.0
+        },
+        "memory": {
+          "average_mb": 32.0,
+          "maximum_mb": 34.0,
+          "minimum_mb": 31.0
+        },
+        "duration_seconds": 10
+      }
+    }
+  },
+  "expected": {
+    "status": "normal",
+    "recommended_next_test": "none"
+  }
+}

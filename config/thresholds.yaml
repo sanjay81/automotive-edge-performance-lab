@@ -4,8 +4,7 @@ idle:
   max_memory_mb: 100
 
 load:
-  min_cpu_avg: 50
-  max_cpu_avg: 120
+  max_cpu_avg: 100
   max_memory_mb: 100
 
 recovery:

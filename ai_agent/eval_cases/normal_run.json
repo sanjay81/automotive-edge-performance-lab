@@ -1,0 +1,39 @@
+{
+  "input": {
+    "run_id": "eval-normal",
+    "scenarios": {
+      "idle": {
+        "samples": 10,
+        "cpu": {
+          "average": 2.1,
+          "maximum": 4.2,
+          "minimum": 1.0
+        },
+        "memory": {
+          "average_mb": 31.5,
+          "maximum_mb": 32.0,
+          "minimum_mb": 31.0
+        },
+        "duration_seconds": 10
+      },
+      "load-medium": {
+        "samples": 10,
+        "cpu": {
+          "average": 45.0,
+          "maximum": 60.0,
+          "minimum": 30.0
+        },
+        "memory": {
+          "average_mb": 35.0,
+          "maximum_mb": 36.0,
+          "minimum_mb": 34.0
+        },
+        "duration_seconds": 10
+      }
+    }
+  },
+  "expected": {
+    "status": "normal",
+    "recommended_next_test": "none"
+  }
+}

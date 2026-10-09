@@ -1,0 +1,39 @@
+{
+  "input": {
+    "run_id": "eval-high-cpu",
+    "scenarios": {
+      "idle": {
+        "samples": 10,
+        "cpu": {
+          "average": 2.0,
+          "maximum": 3.5,
+          "minimum": 1.0
+        },
+        "memory": {
+          "average_mb": 31.0,
+          "maximum_mb": 32.0,
+          "minimum_mb": 30.5
+        },
+        "duration_seconds": 10
+      },
+      "load-medium": {
+        "samples": 10,
+        "cpu": {
+          "average": 135.0,
+          "maximum": 150.0,
+          "minimum": 88.0
+        },
+        "memory": {
+          "average_mb": 35.0,
+          "maximum_mb": 37.0,
+          "minimum_mb": 34.0
+        },
+        "duration_seconds": 10
+      }
+    }
+  },
+  "expected": {
+    "status": "anomaly",
+    "recommended_next_test": "recovery"
+  }
+}

@@ -1,0 +1,40 @@
+{
+  "description": "High load reaches its minimum expectation and stays below maximum limits.",
+  "input": {
+    "run_id": "eval-healthy-high-load",
+    "scenarios": {
+      "idle": {
+        "samples": 10,
+        "cpu": {
+          "average": 2.0,
+          "maximum": 4.0,
+          "minimum": 1.0
+        },
+        "memory": {
+          "average_mb": 31.0,
+          "maximum_mb": 32.0,
+          "minimum_mb": 30.0
+        },
+        "duration_seconds": 10
+      },
+      "load-high": {
+        "samples": 10,
+        "cpu": {
+          "average": 85.0,
+          "maximum": 110.0,
+          "minimum": 60.0
+        },
+        "memory": {
+          "average_mb": 42.0,
+          "maximum_mb": 48.0,
+          "minimum_mb": 39.0
+        },
+        "duration_seconds": 10
+      }
+    }
+  },
+  "expected": {
+    "status": "normal",
+    "recommended_next_test": "none"
+  }
+}
