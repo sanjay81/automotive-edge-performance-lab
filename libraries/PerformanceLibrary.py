@@ -1,7 +1,6 @@
 import time
 import csv
 import docker
-import csv
 import requests
 import matplotlib.pyplot as plt
 
@@ -83,13 +82,9 @@ class PerformanceLibrary:
 
             while time.time() < end_time:
 
-                cpu = self.get_container_cpu_percent(
-                    container_name
-                )
-
-                memory = self.get_container_memory_mb(
-                    container_name
-                )
+                stats = self.get_container_stats(container_name)
+                cpu = stats["cpu_percent"]
+                memory = stats["memory_mb"]
 
                 elapsed = round(
                     time.time() - start_time,

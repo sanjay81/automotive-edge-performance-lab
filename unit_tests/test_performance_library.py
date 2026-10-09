@@ -116,11 +116,12 @@ def test_measure_container_generates_summary_and_csv(
     mock_from_env.return_value = mock_client
     library = PerformanceLibrary()
 
-    library.get_container_cpu_percent = MagicMock(
-        side_effect=[10.0, 20.0, 30.0]
-    )
-    library.get_container_memory_mb = MagicMock(
-        side_effect=[30.0, 32.0, 34.0]
+    library.get_container_stats = MagicMock(
+        side_effect=[
+            {"cpu_percent": 10.0, "memory_mb": 30.0},
+            {"cpu_percent": 20.0, "memory_mb": 32.0},
+            {"cpu_percent": 30.0, "memory_mb": 34.0},
+        ]
     )
 
     clock = {"now": 0.0}
@@ -149,8 +150,7 @@ def test_measure_container_generates_summary_and_csv(
         "samples": 3,
         "csv_file": str(csv_file),
     }
-    assert library.get_container_cpu_percent.call_count == 3
-    assert library.get_container_memory_mb.call_count == 3
+    assert library.get_container_stats.call_count == 3
 
     with csv_file.open(newline="") as file:
         rows = list(csv.DictReader(file))
