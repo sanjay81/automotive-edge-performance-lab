@@ -1,8 +1,15 @@
 import csv
 import json
+import re
 import sys
 from pathlib import Path
 import xml.etree.ElementTree as ET
+
+
+STARTUP_TIME_PATTERNS = (
+    re.compile(r"ECU startup time:\s*([\d.]+)\s*seconds", re.IGNORECASE),
+    re.compile(r"Startup time cycle\s+\d+:\s*([\d.]+)\s*seconds", re.IGNORECASE),
+)
 
 
 def read_measurement(csv_file):
@@ -53,17 +60,72 @@ def read_measurement(csv_file):
 
 
 def read_robot_results(output_xml):
-    """Return suite-level pass/fail counts from Robot Framework output.xml."""
+    """Return test outcomes and startup measurements from Robot output.xml."""
     root = ET.parse(output_xml).getroot()
     stats = root.find(".//statistics/total/stat")
     if stats is None:
         raise ValueError(f"Robot total statistics not found in {output_xml}")
 
+    passed = int(stats.get("pass", 0))
+    failed = int(stats.get("fail", 0))
+    skipped = int(stats.get("skip", 0))
+    suite_status = root.find("./suite/status")
+    test_outcomes = []
+    startup_results = []
+    restart_results = []
+
+    for test in root.findall(".//test"):
+        status_element = test.find("status")
+        if status_element is None:
+            continue
+
+        name = test.get("name", "")
+        outcome = {
+            "name": name,
+            "status": status_element.get("status"),
+            "elapsed_seconds": round(float(status_element.get("elapsed", 0)), 3),
+        }
+        failure_messages = [
+            (message.text or "").strip()
+            for message in test.iter("msg")
+            if message.get("level") == "FAIL" and (message.text or "").strip()
+        ]
+        if failure_messages:
+            outcome["failure_messages"] = failure_messages
+        test_outcomes.append(outcome)
+
+        measurements = []
+        for message in test.iter("msg"):
+            text = message.text or ""
+            for pattern in STARTUP_TIME_PATTERNS:
+                measurements.extend(float(match) for match in pattern.findall(text))
+
+        name_lower = name.lower()
+        if "startup" in name_lower:
+            startup_results.append({
+                **outcome,
+                "measured_startup_seconds": measurements,
+            })
+        if "restart" in name_lower:
+            restart_results.append({
+                **outcome,
+                "measured_startup_seconds": measurements,
+                "restart_cycles": len(measurements),
+            })
+
     return {
-        "total": int(stats.get("pass", 0)) + int(stats.get("fail", 0)),
-        "passed": int(stats.get("pass", 0)),
-        "failed": int(stats.get("fail", 0)),
-        "status": stats.get("status"),
+        "total": passed + failed + skipped,
+        "passed": passed,
+        "failed": failed,
+        "skipped": skipped,
+        "status": (
+            suite_status.get("status")
+            if suite_status is not None
+            else ("FAIL" if failed else "PASS" if passed else "SKIP")
+        ),
+        "tests": test_outcomes,
+        "startup_results": startup_results,
+        "restart_stability_results": restart_results,
     }
 
 

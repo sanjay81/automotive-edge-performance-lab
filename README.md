@@ -112,8 +112,11 @@ python ai_agent/build_run_summary.py results/run-<timestamp>
 ```
 
 The resulting `run_summary.json` contains the scenario measurements and, when
-`output.xml` is present, Robot's total, passed, failed, and overall status
-counts. It can then be analyzed by the optional AI helper:
+`output.xml` is present, Robot's total, passed, failed, skipped, and overall
+status, individual test outcomes and failure messages, plus measured startup
+times and restart-cycle results. This gives the analyzer the actual Robot
+startup/restart decisions alongside the CSV metrics. It can then be analyzed by
+the optional AI helper:
 
 ```bash
 python ai_agent/analyze_run.py results/run-<timestamp>/run_summary.json

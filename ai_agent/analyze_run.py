@@ -107,6 +107,15 @@ RECOVERY POLICY
 4. Do not recommend another recovery test when a recovery result is already
    present unless the input explicitly indicates that the result is invalid or
    incomplete.
+
+ROBOT RESULTS POLICY
+
+1. Treat any failed Robot test in run_summary.robot_results.tests as an ANOMALY.
+2. Include the failed test name and Robot failure message in the findings.
+3. Use startup_results and restart_stability_results to report measured startup
+   times, the Robot test outcome, and the number of observed restart cycles.
+4. Do not describe startup or restart behavior as passing when the corresponding
+   Robot test status is FAIL.
 IDLE POLICY
 
 1. Compare idle CPU and memory measurements against configured idle limits.
