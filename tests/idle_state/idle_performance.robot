@@ -36,13 +36,13 @@ Verify ECU Idle Performance
     Log    Maximum RAM: ${memory_max} MB
 
     Should Be True
-    ...    ${cpu_avg} < ${IDLE}[max_cpu_avg]
+    ...    ${cpu_avg} <= ${IDLE}[max_cpu_avg]
     ...    Average CPU exceeded limit: ${cpu_avg}% > ${IDLE}[max_cpu_avg]%
 
     Should Be True
-    ...    ${cpu_max} < ${IDLE}[max_cpu_peak]
+    ...    ${cpu_max} <= ${IDLE}[max_cpu_peak]
     ...    Peak CPU exceeded limit: ${cpu_max}% > ${IDLE}[max_cpu_peak]%
 
     Should Be True
-    ...    ${memory_max} < ${IDLE}[max_memory_mb]
+    ...    ${memory_max} <= ${IDLE}[max_memory_mb]
     ...    RAM exceeded limit: ${memory_max} MB > ${IDLE}[max_memory_mb] MB

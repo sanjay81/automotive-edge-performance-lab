@@ -108,6 +108,41 @@ def test_get_container_stats_without_online_cpus(mock_from_env):
 
 
 @patch("libraries.PerformanceLibrary.docker.from_env")
+def test_get_container_stats_caps_cpu_at_100_percent(mock_from_env):
+    mock_client = MagicMock()
+    mock_container = MagicMock()
+
+    mock_from_env.return_value = mock_client
+    mock_client.containers.get.return_value = mock_container
+
+    mock_container.stats.return_value = {
+        "cpu_stats": {
+            "cpu_usage": {
+                "total_usage": 6000
+            },
+            "system_cpu_usage": 7000,
+            "online_cpus": 8
+        },
+        "precpu_stats": {
+            "cpu_usage": {
+                "total_usage": 1000
+            },
+            "system_cpu_usage": 1000
+        },
+        "memory_stats": {
+            "usage": 104857600
+        }
+    }
+
+    library = PerformanceLibrary()
+
+    result = library.get_container_stats("ecu-service")
+
+    assert result["cpu_percent"] == 100.0
+    assert result["memory_mb"] == 100.0
+
+
+@patch("libraries.PerformanceLibrary.docker.from_env")
 def test_measure_container_generates_summary_and_csv(
     mock_from_env,
     tmp_path

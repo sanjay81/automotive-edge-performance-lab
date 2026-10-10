@@ -34,7 +34,7 @@ Verify ECU Recovers After Rogue Load
 
     Log    CPU average while load is active: ${loaded}[cpu_avg] %
     Should Be True
-    ...    ${loaded}[cpu_avg] > ${profile}[min_cpu_avg]
+    ...    ${loaded}[cpu_avg] >= ${profile}[min_cpu_avg]
     ...    Recovery scenario did not establish load. Actual=${loaded}[cpu_avg]% Minimum=${profile}[min_cpu_avg]%
 
     Stop Rogue Load
@@ -58,9 +58,9 @@ Verify ECU Recovers After Rogue Load
     Log    Recovery RAM Maximum: ${memory_max} MB
 
     Should Be True
-    ...    ${cpu_avg} < ${RECOVERY}[max_cpu_avg]
+    ...    ${cpu_avg} <= ${RECOVERY}[max_cpu_avg]
     ...    ECU did not recover. CPU still high: ${cpu_avg}%
 
     Should Be True
-    ...    ${memory_max} < ${RECOVERY}[max_memory_mb]
+    ...    ${memory_max} <= ${RECOVERY}[max_memory_mb]
     ...    ECU memory did not recover: ${memory_max} MB

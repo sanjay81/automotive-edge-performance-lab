@@ -48,8 +48,7 @@ class PerformanceLibrary:
             cpu_percent = (
                 cpu_delta / system_delta
             ) * online_cpus * 100
-
-            return round(cpu_percent, 2)
+            return round(min(100.0, max(0.0, cpu_percent)), 2)
 
         return 0.0
 
@@ -309,10 +308,12 @@ class PerformanceLibrary:
         else:
             cpu_percent = 0.0
 
+        cpu_percent = round(min(100.0, max(0.0, cpu_percent)), 2)
+
         memory_usage = stats["memory_stats"]["usage"]
         memory_mb = memory_usage / 1024 / 1024
 
         return {
-            "cpu_percent": round(cpu_percent, 2),
+            "cpu_percent": cpu_percent,
             "memory_mb": round(memory_mb, 2)
         }

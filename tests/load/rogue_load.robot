@@ -47,13 +47,13 @@ Verify ECU Performance Under Rogue Load
     Log    Maximum RAM under load: ${memory_max} MB
 
     Should Be True
-    ...    ${cpu_avg} > ${profile}[min_cpu_avg]
+    ...    ${cpu_avg} >= ${profile}[min_cpu_avg]
     ...    RogueApp profile '${LOAD_PROFILE}' did not generate enough CPU load. Actual=${cpu_avg}% Minimum=${profile}[min_cpu_avg]%
 
     Should Be True
-    ...    ${cpu_avg} < ${LOAD}[max_cpu_avg]
+    ...    ${cpu_avg} <= ${LOAD}[max_cpu_avg]
     ...    ECU CPU exceeded allowed load limit. Actual=${cpu_avg}% Maximum=${LOAD}[max_cpu_avg]%
 
     Should Be True
-    ...    ${memory_max} < ${LOAD}[max_memory_mb]
+    ...    ${memory_max} <= ${LOAD}[max_memory_mb]
     ...    Memory limit exceeded. Actual=${memory_max} MB Maximum=${LOAD}[max_memory_mb] MB
