@@ -17,6 +17,7 @@ A clean-room **embedded/automotive performance-testing POC** built with Robot Fr
 - Automatically generated CPU/memory graphs.
 - Repeatable execution in GitHub Actions.
 - Per-run result directories so measurements remain traceable.
+- Optional AI-assisted analysis of run summaries and validation results.
 
 This is intentionally a **small, reproducible laboratory**, not a claim to reproduce a production HIL/vehicle environment. The service and load are synthetic so the performance-test framework can be demonstrated publicly without proprietary code or data.
 
@@ -26,19 +27,33 @@ This is intentionally a **small, reproducible laboratory**, not a claim to repro
 GitHub Actions / Local Runner
             |
             v
-     Robot Framework
-            |
-            v
- Python measurement libraries
-            |
-            v
- Docker test environment
-     |               |
- ECU-style service   Rogue load
-     |
-     v
- CSV + graphs + Robot reports
+ Robot Framework scenarios
+       |                 \
+       v                  v
+Python measurement    Docker Compose lifecycle
+library                    |
+       |                   v
+       +<---------- Docker test environment
+                    |                  |
+             ECU-style service    Rogue load
+       |
+       v
+CSV + graphs + Robot reports (HTML/XML)
+       |
+       | Optional, manually run analysis
+       v
+run_summary.json
+       |
+       v
+AI analyzer (requires OPENAI_API_KEY)
+       |
+       v
+ai_analysis.json (findings + next-test recommendation)
 ```
+
+The Robot Framework suite and its configured thresholds determine test
+pass/fail. The AI analyzer is an optional follow-up: it interprets a generated
+run summary and does not replace or change the deterministic test results.
 
 ## Scenarios
 
@@ -105,7 +120,10 @@ Each run creates a timestamped directory in `results/` containing:
 - scenario CSV measurements such as `idle.csv`, `load.csv`, and `recovery.csv`
 - generated CPU and memory graphs
 
-Build a machine-readable summary from the measurements and Robot results:
+## Optional AI analysis
+
+After a test run, build a machine-readable summary from its measurements and
+Robot results:
 
 ```bash
 python ai_agent/build_run_summary.py results/run-<timestamp>
@@ -115,12 +133,18 @@ The resulting `run_summary.json` contains the scenario measurements and, when
 `output.xml` is present, Robot's total, passed, failed, skipped, and overall
 status, individual test outcomes and failure messages, plus measured startup
 times and restart-cycle results. This gives the analyzer the actual Robot
-startup/restart decisions alongside the CSV metrics. It can then be analyzed by
-the optional AI helper:
+startup/restart decisions alongside the CSV metrics. Analyze it with the
+optional AI helper:
 
 ```bash
 python ai_agent/analyze_run.py results/run-<timestamp>/run_summary.json
 ```
+
+The analyzer sends the summary and configured thresholds to the model API,
+validates its JSON response, and saves the findings and recommendation as
+`ai_analysis.json` beside the summary. Set `OPENAI_API_KEY` in the project-root
+`.env` file or export it in your shell before running the analyzer. Keep the key
+private; do not commit it.
 
 Run the evaluation cases from the project root with:
 
@@ -128,8 +152,8 @@ Run the evaluation cases from the project root with:
 python -m ai_agent.evaluate_agent
 ```
 
-Set `OPENAI_API_KEY` in the project-root `.env` file or shell to use the AI
-helper. The dependency is installed through `requirements.txt`.
+The evaluation command also calls the model API and requires `OPENAI_API_KEY`.
+The OpenAI client dependency is installed through `requirements.txt`.
 
 To execute a single Robot Framework scenario:
 
@@ -141,9 +165,10 @@ robot tests/idle_state/idle_performance.robot
 
 GitHub Actions runs the unit tests first, then the Docker-backed Robot Framework
 suite on pushes to `main`, pull requests, and manual dispatches. CI uploads the
-Robot reports, CSV measurements, and graphs as workflow artifacts. Generated
-run output under `results/`, including summaries and AI analyses, is ignored by
-Git.
+Robot reports, CSV measurements, and graphs as workflow artifacts. The optional
+summary-building and AI-analysis steps are not part of CI and do not gate the
+workflow. Generated run output under `results/`, including summaries and AI
+analyses, is ignored by Git.
 
 ## Test isolation and cleanup
 
