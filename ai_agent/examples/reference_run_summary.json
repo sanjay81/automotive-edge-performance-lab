@@ -1,0 +1,120 @@
+{
+  "run_id": "run-20261010-092735",
+  "scenarios": {
+    "idle": {
+      "samples": 5,
+      "cpu": {
+        "average": 0.02,
+        "maximum": 0.02,
+        "minimum": 0.02
+      },
+      "memory": {
+        "average_mb": 20.86,
+        "maximum_mb": 20.86,
+        "minimum_mb": 20.86
+      },
+      "duration_seconds": 10.1
+    },
+    "recovery-load": {
+      "samples": 5,
+      "cpu": {
+        "average": 100.0,
+        "maximum": 100.0,
+        "minimum": 100.0
+      },
+      "memory": {
+        "average_mb": 29.69,
+        "maximum_mb": 29.93,
+        "minimum_mb": 29.45
+      },
+      "duration_seconds": 10.04
+    },
+    "load-medium": {
+      "samples": 5,
+      "cpu": {
+        "average": 100.0,
+        "maximum": 100.0,
+        "minimum": 100.0
+      },
+      "memory": {
+        "average_mb": 21.9,
+        "maximum_mb": 22.18,
+        "minimum_mb": 21.64
+      },
+      "duration_seconds": 10.46
+    },
+    "recovery": {
+      "samples": 5,
+      "cpu": {
+        "average": 0.02,
+        "maximum": 0.03,
+        "minimum": 0.01
+      },
+      "memory": {
+        "average_mb": 38.08,
+        "maximum_mb": 39.36,
+        "minimum_mb": 37.22
+      },
+      "duration_seconds": 10.08
+    }
+  },
+  "robot_results": {
+    "total": 5,
+    "passed": 5,
+    "failed": 0,
+    "skipped": 0,
+    "status": "PASS",
+    "tests": [
+      {
+        "name": "Verify ECU Idle Performance",
+        "status": "PASS",
+        "elapsed_seconds": 11.304
+      },
+      {
+        "name": "Verify ECU Performance Under Rogue Load",
+        "status": "PASS",
+        "elapsed_seconds": 27.05
+      },
+      {
+        "name": "Verify ECU Recovers After Rogue Load",
+        "status": "PASS",
+        "elapsed_seconds": 42.847
+      },
+      {
+        "name": "Verify ECU Restart Stability",
+        "status": "PASS",
+        "elapsed_seconds": 52.472
+      },
+      {
+        "name": "Verify ECU Startup Time",
+        "status": "PASS",
+        "elapsed_seconds": 10.499
+      }
+    ],
+    "startup_results": [
+      {
+        "name": "Verify ECU Startup Time",
+        "status": "PASS",
+        "elapsed_seconds": 10.499,
+        "measured_startup_seconds": [
+          0.3
+        ]
+      }
+    ],
+    "restart_stability_results": [
+      {
+        "name": "Verify ECU Restart Stability",
+        "status": "PASS",
+        "elapsed_seconds": 52.472,
+        "measured_startup_seconds": [
+          0.32,
+          0.35,
+          0.35,
+          0.36,
+          0.36
+        ],
+        "restart_cycles": 5
+      }
+    ]
+  }
+}
